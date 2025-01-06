@@ -1,14 +1,21 @@
 /**
- * Retrieves the translation of text.
- *
- * @see https://developer.wordpress.org/block-editor/reference-guides/packages/packages-i18n/
+ * React hook that is used to mark the block wrapper element.
+ * It provides all the necessary props like the class name.
  */
-import { __ } from '@wordpress/i18n';
-import './editor.scss'; // Import custom styles
+import { useBlockProps } from '@wordpress/block-editor';
+import './editor.scss';
+import { ReservoirLevels } from './components/ReservoirLevels';
 
-import { ReservoirLevels } from './components/ReservoirLevels'
-
-
-export default function Edit() {
-    return ReservoirLevels();
+/**
+ * The edit function renders the block in the editor.
+ *
+ * @return {Element} Element to render.
+ */
+export default function edit() {
+    const blockProps = useBlockProps();
+    return (
+        <p { ...blockProps }>
+            Reservoir Levels Widget - edit mode content!
+        </p>
+    );
 }

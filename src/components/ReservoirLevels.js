@@ -1,54 +1,55 @@
-/**
- * Retrieves the translation of text.
- *
- * @see https://developer.wordpress.org/block-editor/reference-guides/packages/packages-i18n/
- */
-import { __ } from '@wordpress/i18n';
-import { useState, useEffect } from '@wordpress/element';
-import { useBlockProps } from '@wordpress/block-editor';
-
+import React, { useEffect, useState } from 'react';
 import { fetchDouglasWebsiteData } from '../integration/data';
 
-
 export function ReservoirLevels() {
+    const [data, setData] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
     useEffect(() => {
-        // Fetch data (mocked or real based on the parameter)
-        fetchDouglasWebsiteData({ mock: true })
+        fetchDouglasWebsiteData({ mock: true }) // Change `mock: true` to `false` for live API.
             .then((result) => {
-                setAttributes({ data: result });
+                setData(result);
                 setLoading(false);
             })
-            .catch((err) => {
-                setError(err.message);
+            .catch((error) => {
+                setError(error);
                 setLoading(false);
             });
     }, []);
 
-    // Get image paths from localized `pluginAssets`
-    const mapSvg = pluginAssets.images + 'map.svg';
-    const waterIconSvg = pluginAssets.images + 'water-icon.svg';
+    if (loading) {
+        return <p>Loading reservoir levels...</p>;
+    }
 
-    // Render the layout
+    if (error) {
+        return <p>Error fetching data: {error.message}</p>;
+    }
+
     return (
-        <div {...useBlockProps()}>
-            <h2>{__('Reservoir Levels Widget', 'reservoirs-levels-widget')}</h2>
-            {loading ? (
-                <p>{__('Loading data...', 'reservoirs-levels-widget')}</p>
-            ) : error ? (
-                <p>{__('Error: ', 'reservoirs-levels-widget')}{error}</p>
-            ) : (
-                <ul>
-                    {data.map((item, index) => (
-                        <li key={index}>
-                            <strong>{item.Description}:</strong> {item.Value} {item.Units} ({item.DateTime})
-                        </li>
-                    ))}
-                </ul>
-            )}
-        </div>
+        <ul>
+            {data.map((item, index) => (
+                <li key={index}>
+                    {item.Description}: {item.Value} {item.Units}
+                </li>
+            ))}
+        </ul>
     );
+    
 }
 
+export const StaticReservoirLevels = () => {
+    return [
+        {
+            name: "Reservoir 1",
+            level: 80, // Static level data
+            capacity: 100,
+        },
+        {
+            name: "Reservoir 2",
+            level: 60,
+            capacity: 80,
+        },
+        // Add more reservoirs as needed
+    ];
+};

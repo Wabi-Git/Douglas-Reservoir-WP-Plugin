@@ -22,6 +22,6 @@
 
 /* eslint-disable no-console */
 console.log(
-	'Hello World! (from create-block-reservoirs-levels-widget block)'
+	'Hello World! (from create-block-reservoir-levels-widget block)'
 );
 /* eslint-enable no-console */
