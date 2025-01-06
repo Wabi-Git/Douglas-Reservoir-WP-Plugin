@@ -1,110 +1,128 @@
-/**
- * The following styles get applied inside the editor only.
- *
- * Replace them with your own styles or remove the file completely.
- */
+.reservoir-widget {
+    font-family: Arial, sans-serif;
+    color: #333;
+    padding: 20px;
+    background-color: #fff;
+}
 
+h2 {
+    font-size: 24px;
+    margin-bottom: 20px;
+}
 
-/**
- * Styles for the Reservoir Levels Widget (editor only)
- */
+.reservoir-main-stats {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #e8f6f8;
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+}
 
- .wp-block-create-block-reservoirs-levels-widget {
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	background-color: #f9f9f9;
-	padding: 20px;
-	border-radius: 10px;
-	box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+.main-stat {
+    text-align: center;
+}
 
-	.main-info {
-		text-align: center;
-		background-color: #f3f4f6;
-		padding: 20px;
-		border-radius: 8px;
-		margin-bottom: 20px;
-		box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+.percentage {
+    font-size: 48px;
+    font-weight: bold;
+    margin: 0;
+}
 
-		.main-percentage {
-			font-size: 3em;
-			font-weight: bold;
-			color: #333;
-		}
+.change-week,
+.change-month {
+    font-size: 14px;
+    color: #777;
+}
 
-		.weekly-change {
-			font-size: 0.9em;
-			color: #0073aa;
-			margin-top: 10px;
-		}
+.daily-use {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    margin-top: 10px;
+}
 
-		.daily-use {
-			margin-top: 15px;
-			font-size: 1.1em;
-			color: #444;
+.water-icon {
+    width: 50px;
+    height: auto;
+    margin-bottom: 10px;
+}
 
-			span {
-				font-size: 2em;
-				font-weight: bold;
-				color: #d35400;
-			}
+.daily-use-value {
+    font-size: 24px;
+    font-weight: bold;
+}
 
-			p {
-				font-size: 0.85em;
-				margin-top: 5px;
-			}
-		}
+.label {
+    font-size: 12px;
+    color: #777;
+}
 
-		.updated {
-			font-size: 0.75em;
-			color: #888;
-			margin-top: 15px;
-		}
-	}
+.reservoir-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 20px;
+}
 
-	.reservoir-list {
-		display: grid;
-		grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-		gap: 15px;
-		width: 100%;
+.reservoir-stat {
+    background-color: #f7f7f7;
+    padding: 10px;
+    text-align: center;
+    border-radius: 8px;
+}
 
-		.reservoir-box {
-			text-align: center;
-			background-color: #eaf4f9;
-			padding: 15px;
-			border-radius: 8px;
-			box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+.stat-bar {
+    position: relative;
+    height: 100px;
+    width: 40px;
+    background-color: #ddd;
+    margin: 0 auto;
+    border-radius: 4px;
+}
 
-			.reservoir-level {
-				font-size: 1.5em;
-				font-weight: bold;
-				color: #2c3e50;
-			}
+.stat-fill {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    background-color: #56c0e0;
+    border-radius: 4px;
+}
 
-			.daily-use {
-				font-size: 1em;
-				color: #d35400;
-				margin-top: 5px;
-			}
+.location {
+    margin-top: 10px;
+    font-size: 14px;
+    font-weight: bold;
+}
 
-			.reservoir-name {
-				font-size: 0.9em;
-				color: #666;
-				margin-top: 10px;
-			}
-		}
-	}
+.daily-usage {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    margin-top: 10px;
+}
 
-	.map-background {
-		margin-top: 20px;
-		width: 100%;
-		text-align: center;
+.water-icon-small {
+    width: 20px;
+    height: auto;
+}
 
-		img {
-			max-width: 100%;
-			height: auto;
-			opacity: 0.5;
-			border-radius: 10px;
-		}
-	}
+.reservoir-map {
+    margin-top: 20px;
+    text-align: center;
+}
+
+.map-image {
+    max-width: 100%;
+    height: auto;
+    opacity: 0.8;
+}
+
+.footer-note {
+    margin-top: 20px;
+    font-size: 12px;
+    text-align: center;
+    color: #999;
 }
