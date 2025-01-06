@@ -13,10 +13,5 @@ import { StaticReservoirLevels } from './components/ReservoirLevels';
  * @return {Element} Element to render.
  */
 export default function save() {
-    const blockProps = useBlockProps.save();
-    return (
-        <p { ...blockProps }>
-            StaticReservoirLevels();
-        </p>
-    );
+    return null; // Use server-side rendering, so save function returns null.
 }
