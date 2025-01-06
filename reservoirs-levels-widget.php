@@ -28,3 +28,18 @@ function create_block_reservoirs_levels_widget_block_init() {
 	register_block_type( __DIR__ . '/build' );
 }
 add_action( 'init', 'create_block_reservoirs_levels_widget_block_init' );
+
+/**
+ * Enqueue the block editor assets and localize plugin asset paths.
+ */
+function enqueue_reservoirs_widget_assets() {
+    // Localize the plugin's asset path for JavaScript use.
+    wp_localize_script(
+        'reservoirs-widget-script',
+        'pluginAssets',
+        [
+            'images' => plugins_url( 'assets/images/', __FILE__ ),
+        ]
+    );
+}
+add_action( 'enqueue_block_editor_assets', 'enqueue_reservoirs_widget_assets' );

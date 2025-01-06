@@ -4,6 +4,107 @@
  * Replace them with your own styles or remove the file completely.
  */
 
-.wp-block-create-block-reservoirs-levels-widget {
-	border: 1px dotted #f00;
+
+/**
+ * Styles for the Reservoir Levels Widget (editor only)
+ */
+
+ .wp-block-create-block-reservoirs-levels-widget {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	background-color: #f9f9f9;
+	padding: 20px;
+	border-radius: 10px;
+	box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+
+	.main-info {
+		text-align: center;
+		background-color: #f3f4f6;
+		padding: 20px;
+		border-radius: 8px;
+		margin-bottom: 20px;
+		box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+
+		.main-percentage {
+			font-size: 3em;
+			font-weight: bold;
+			color: #333;
+		}
+
+		.weekly-change {
+			font-size: 0.9em;
+			color: #0073aa;
+			margin-top: 10px;
+		}
+
+		.daily-use {
+			margin-top: 15px;
+			font-size: 1.1em;
+			color: #444;
+
+			span {
+				font-size: 2em;
+				font-weight: bold;
+				color: #d35400;
+			}
+
+			p {
+				font-size: 0.85em;
+				margin-top: 5px;
+			}
+		}
+
+		.updated {
+			font-size: 0.75em;
+			color: #888;
+			margin-top: 15px;
+		}
+	}
+
+	.reservoir-list {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+		gap: 15px;
+		width: 100%;
+
+		.reservoir-box {
+			text-align: center;
+			background-color: #eaf4f9;
+			padding: 15px;
+			border-radius: 8px;
+			box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+
+			.reservoir-level {
+				font-size: 1.5em;
+				font-weight: bold;
+				color: #2c3e50;
+			}
+
+			.daily-use {
+				font-size: 1em;
+				color: #d35400;
+				margin-top: 5px;
+			}
+
+			.reservoir-name {
+				font-size: 0.9em;
+				color: #666;
+				margin-top: 10px;
+			}
+		}
+	}
+
+	.map-background {
+		margin-top: 20px;
+		width: 100%;
+		text-align: center;
+
+		img {
+			max-width: 100%;
+			height: auto;
+			opacity: 0.5;
+			border-radius: 10px;
+		}
+	}
 }
