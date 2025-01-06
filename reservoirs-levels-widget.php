@@ -13,33 +13,28 @@
  * @package CreateBlock
  */
 
-if ( ! defined( 'ABSPATH' ) ) {
-	exit; // Exit if accessed directly.
+ if ( ! defined( 'ABSPATH' ) ) {
+    exit; // Exit if accessed directly.
 }
 
 /**
  * Registers the block using the metadata loaded from the `block.json` file.
- * Behind the scenes, it registers also all assets so they can be enqueued
- * through the block editor in the corresponding context.
- *
- * @see https://developer.wordpress.org/reference/functions/register_block_type/
  */
 function create_block_reservoirs_levels_widget_block_init() {
-	register_block_type( __DIR__ . '/build' );
+    register_block_type( __DIR__ . '/build' );
 }
 add_action( 'init', 'create_block_reservoirs_levels_widget_block_init' );
 
 /**
  * Enqueue the block editor assets and localize plugin asset paths.
  */
-function enqueue_reservoirs_widget_assets() {
-    // Localize the plugin's asset path for JavaScript use.
+function enqueue_additional_reservoirs_widget_assets() {
     wp_localize_script(
-        'reservoirs-widget-script',
+        'create-block-reservoirs-levels-widget-editor-script',
         'pluginAssets',
         [
             'images' => plugins_url( 'assets/images/', __FILE__ ),
         ]
     );
 }
-add_action( 'enqueue_block_editor_assets', 'enqueue_reservoirs_widget_assets' );
+add_action( 'enqueue_block_editor_assets', 'enqueue_additional_reservoirs_widget_assets' );

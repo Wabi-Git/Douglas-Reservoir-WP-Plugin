@@ -33,12 +33,17 @@ import { fetchDouglasWebsiteData } from './integration/data';
  */
 export default function Edit() {
     // useState(DEFAULT_VALUE)
-    // ??? Reset that hardcoded database to an empth array []
     const [data, setData] = useState([]);
     const [error, setError] = useState(null);
 
+    // URLs for static images (localized via pluginAssets in PHP)
+    const mapUrl = `${pluginAssets.images}map.svg`;
+    const iconUrl = `${pluginAssets.images}water-icon.svg`;
+
+    console.log(mapUrl);
+
     useEffect(() => {
-        fetchDouglasWebsiteData({mock: true}) // ??? TODO: Set to `false` in production to fetch real data
+        fetchDouglasWebsiteData({ mock: true }) // TODO: Set to `false` in production to fetch real data
             .then((result) => {
                 setData(result);
             })
@@ -49,9 +54,21 @@ export default function Edit() {
 
     return (
         <div { ...useBlockProps() }>
-            <p>{ __('Reservoirs Levels Widget', 'reservoirs-levels-widget') }</p>
+            <h2 className="reservoirs-title">{__('How full are our reservoirs?', 'reservoirs-levels-widget')}</h2>
+
+            {/* Add the static map */}
+            <div className="map-container">
+                <img src={mapUrl} alt="Reservoir Map" className="map-image" />
+            </div>
+
+            {/* Add the static water icon */}
+            <div className="water-icon-container">
+                <img src={iconUrl} alt="Water Icon" className="water-icon" />
+            </div>
+
+            {/* Display fetched data or error */}
             {error ? (
-                <p>{ __('Error loading data:', 'reservoirs-levels-widget') } {error}</p>
+                <p>{__('Error loading data:', 'reservoirs-levels-widget')} {error}</p>
             ) : (
                 data.length > 0 ? (
                     <ul>
@@ -62,7 +79,7 @@ export default function Edit() {
                         ))}
                     </ul>
                 ) : (
-                    <p>{ __('Loading data...', 'reservoirs-levels-widget') }</p>
+                    <p>{__('Loading data...', 'reservoirs-levels-widget')}</p>
                 )
             )}
         </div>
