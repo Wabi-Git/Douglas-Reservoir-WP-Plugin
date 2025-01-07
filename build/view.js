@@ -1,1 +1,1 @@
-console.log("Hello World! (from create-block-reservoir-levels-widget block)");
+console.log("Hello World! (from create-block-reservoir-levels-widget block)"),document.addEventListener("DOMContentLoaded",(()=>{document.querySelectorAll(".reservoir").forEach((e=>{const t=parseFloat(e.querySelector(".level").textContent.replace("%",""));let l=document.createElement("div");l.classList.add("reservoir-fill"),e.appendChild(l),setTimeout((()=>{l.style.height=`${t}%`}),100)}))}));

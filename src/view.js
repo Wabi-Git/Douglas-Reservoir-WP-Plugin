@@ -25,3 +25,26 @@ console.log(
 	'Hello World! (from create-block-reservoir-levels-widget block)'
 );
 /* eslint-enable no-console */
+
+document.addEventListener("DOMContentLoaded", () => {
+    // Select all reservoirs
+    const reservoirs = document.querySelectorAll(".reservoir");
+
+    reservoirs.forEach((reservoir) => {
+        // Get the percentage value from the .level element
+        const percentage = parseFloat(
+            reservoir.querySelector(".level").textContent.replace("%", "")
+        );
+
+        // Get the reservoir-fill div
+        let fill = document.createElement("div");
+        fill.classList.add("reservoir-fill");
+        reservoir.appendChild(fill);
+
+        // Animate the fill based on the percentage
+        setTimeout(() => {
+            fill.style.height = `${percentage}%`;
+        }, 100); // Add a slight delay for smoother animation
+    });
+});
+

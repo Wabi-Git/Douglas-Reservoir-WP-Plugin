@@ -40,7 +40,7 @@
     justify-content: center; /* Centers content vertically */
     height: 100%; /* Ensures all blocks in a row match height */
     box-shadow: 0 1px 6px rgba(0, 0, 0, 0.1);
-	transition: transform 0.2s, box-shadow 0.2s;
+    transition: transform 0.2s, box-shadow 0.2s;
     display: flex;
     flex-direction: column;
 }
@@ -74,8 +74,10 @@
     box-shadow: 0 1px 6px rgba(0, 0, 0, 0.1);
     transition: transform 0.2s, box-shadow 0.2s;
     height: 100%; /* Ensures all blocks in a row match height */
-	display: flex;
+    display: flex;
     flex-direction: column;
+    position: relative; /* Needed for the fill effect */
+    overflow: hidden; /* Ensures the fill doesn’t spill outside the container */
 }
 
 .reservoir:hover {
@@ -83,13 +85,16 @@
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
-
-.reservoir h3 {
+/* Text content above the fill */
+.reservoir h3,
+.reservoir .level,
+.reservoir .tag {
     font-size: 1rem;
     font-weight: 600;
+    color: #444;
     margin-bottom: 10px;
-    color: #21759b;
-    line-height: 1.2;
+    position: relative;
+    z-index: 1; /* Ensures text is above the fill */
 }
 
 .reservoir .level {
@@ -104,11 +109,33 @@
     color: #666;
 }
 
+/* Water fill effect */
+.reservoir-fill {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%; /* Fill spans the full width of the container */
+    height: 0; /* Start with no height */
+    background-color: #a4cedb; /* Blue color for the fill */
+    transition: height 1s ease-in-out; /* Smooth animation for the fill */
+    z-index: 0; /* Below the text */
+}
+
 /* Empty columns */
 .empty-column {
     background-color: transparent;
     height: 100%;
     grid-column: span 1; /* Takes up one grid space */
+}
+
+/* Map style */
+.map-container {
+    background-color: transparent;
+    opacity: 0.2;
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Ensures the map scales properly */
+    grid-column: span 2; /* Takes up one grid space */
 }
 
 /* Responsive adjustments */
@@ -120,5 +147,9 @@
     .reservoir.total-reservoir {
         grid-row: span 1; /* Spans only one row on smaller screens */
         height: auto; /* Adjust height to fit content */
+    }
+
+    .map-container {
+        display: none; /* Hide the map on smaller screens */
     }
 }
