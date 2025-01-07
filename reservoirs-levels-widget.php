@@ -67,40 +67,6 @@ function fetch_douglas_website_data( $url = 'https://www.odasa.com.au/douglas-we
 
     return $data;
 }
-/**
- * Render callback for the reservoir levels widget block.
- *
- * @param array $attributes The block attributes.
- * @return string The rendered HTML for the block.
- */
-function render_reservoir_levels_widget( $attributes ) {
-    // Fetch data dynamically, or use mock data for development.
-    try {
-        $reservoirs = fetch_douglas_website_data(
-            'https://www.odasa.com.au/douglas-website-data', 
-            false // Set to true to use mock data for testing.
-        );
-    } catch ( Exception $e ) {
-        return '<p>Error fetching reservoir data: ' . esc_html( $e->getMessage() ) . '</p>';
-    }
-
-    ob_start();
-    ?>
-    <div class="reservoir-widget">
-        <h2>How full are our reservoirs?</h2>
-        <div class="reservoir-details">
-            <?php foreach ( $reservoirs as $reservoir ) : ?>
-                <div class="reservoir">
-                    <h3><?php echo esc_html( $reservoir['Description'] ); ?></h3>
-                    <div class="level"><?php echo esc_html( $reservoir['Value'] ); ?>%</div>
-                    <div class="tag"><?php echo esc_html( $reservoir['TagName'] ); ?></div>
-                </div>
-            <?php endforeach; ?>
-        </div>
-    </div>
-    <?php
-    return ob_get_clean();
-}
 
 /**
  * Registers the block using the metadata loaded from the `block.json` file.
@@ -111,6 +77,82 @@ function create_block_reservoir_levels_widget_block_init() {
     ) );
 }
 add_action( 'init', 'create_block_reservoir_levels_widget_block_init' );
+
+
+/**
+ * Render callback for the reservoir levels widget block.
+ *
+ * @param array $attributes The block attributes.
+ * @return string The rendered HTML for the block.
+ */
+function render_reservoir_levels_widget($attributes) {
+    // Fetch data dynamically, or use mock data for development.
+    try {
+        $reservoirs = fetch_douglas_website_data(
+            'https://www.odasa.com.au/douglas-website-data',
+            false // Set to true to use mock data for testing.
+        );
+    } catch (Exception $e) {
+        return '<p>Error fetching reservoir data: ' . esc_html($e->getMessage()) . '</p>';
+    }
+
+    // Calculate the total reservoir level.
+    $total_level = 0;
+    $reservoir_count = count($reservoirs);
+    foreach ($reservoirs as $reservoir) {
+        $total_level += $reservoir['Value'];
+    }
+    $average_level = $reservoir_count > 0 ? round($total_level / $reservoir_count, 1) : 0;
+
+    ob_start();
+    ?>
+        <div class="reservoir-widget">
+            <h2>How full are our reservoirs?</h2>
+            <div class="reservoir-details">
+                <!-- Total Reservoir Level -->
+                <div class="reservoir total-reservoir">
+                    <h3>Total Reservoir Level</h3>
+                    <div class="level"><?php echo esc_html($average_level); ?>%</div>
+                </div>
+
+                <!-- Column 2: First Two Reservoirs -->
+                <div class="reservoir-column">
+                    <?php foreach (array_slice($reservoirs, 0, 2) as $reservoir): ?>
+                        <div class="reservoir">
+                            <h3><?php echo esc_html($reservoir['Description']); ?></h3>
+                            <div class="level"><?php echo esc_html(round($reservoir['Value'], 1)); ?>%</div>
+                            <div class="tag"><?php echo esc_html($reservoir['TagName']); ?></div>
+                        </div>
+                    <?php endforeach; ?>
+                </div>
+
+                <!-- Column 3: Last Two Reservoirs -->
+                <div class="reservoir-column">
+                    <?php foreach (array_slice($reservoirs, 2) as $reservoir): ?>
+                        <div class="reservoir">
+                            <h3><?php echo esc_html($reservoir['Description']); ?></h3>
+                            <div class="level"><?php echo esc_html(round($reservoir['Value'], 1)); ?>%</div>
+                            <div class="tag"><?php echo esc_html($reservoir['TagName']); ?></div>
+                        </div>
+                    <?php endforeach; ?>
+                </div>
+
+                <!-- Column 4: Empty -->
+                <div class="empty-column"></div>
+
+                <!-- Column 5: Empty -->
+                <div class="empty-column"></div>
+            </div>
+        </div>
+    <?php
+    return ob_get_clean();
+}
+
+
+
+
+
+
 
 
 

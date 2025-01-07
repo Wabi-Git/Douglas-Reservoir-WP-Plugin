@@ -1,16 +1,124 @@
 /**
- * The following styles get applied both on the front of your site
- * and in the editor.
- *
- * Replace them with your own styles or remove the file completely.
+ * Styles for the Reservoir Levels Widget.
  */
 
+/* Widget container */
 .wp-block-create-block-reservoir-levels-widget {
-	background-color: #21759b;
-	color: #fff;
-	padding: 2px;
+    background-color: #f7f7f7;
+    color: #333;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    font-family: Arial, sans-serif;
+    max-width: 1200px; /* Increased width for extra columns */
+    margin: 0 auto;
 }
 
-.reservoir-widget {
-	color: red;
+/* Widget title */
+.reservoir-widget h2 {
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: #444;
+    margin-bottom: 20px;
+    text-align: left;
+}
+
+/* Reservoir details container with 5 columns */
+.reservoir-details {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr; /* Five columns */
+    gap: 20px;
+    align-items: stretch; /* Ensures all rows stretch to align properly */
+}
+
+/* Total reservoir spans two rows */
+.reservoir.total-reservoir {
+    background-color: #fbe8a6;
+    padding: 20px;
+    border-radius: 8px;
+    text-align: center;
+    justify-content: center; /* Centers content vertically */
+    height: 100%; /* Ensures all blocks in a row match height */
+    box-shadow: 0 1px 6px rgba(0, 0, 0, 0.1);
+	transition: transform 0.2s, box-shadow 0.2s;
+    display: flex;
+    flex-direction: column;
+}
+
+.reservoir.total-reservoir h3 {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #444;
+    margin-bottom: 10px;
+}
+
+.reservoir.total-reservoir .level {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #333;
+}
+
+/* Individual reservoir columns */
+.reservoir-column {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* Individual reservoir styles */
+.reservoir {
+    background-color: #eaf7ff;
+    padding: 20px;
+    border-radius: 8px;
+    text-align: center;
+    box-shadow: 0 1px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s, box-shadow 0.2s;
+    height: 100%; /* Ensures all blocks in a row match height */
+	display: flex;
+    flex-direction: column;
+}
+
+.reservoir:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+
+.reservoir h3 {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 10px;
+    color: #21759b;
+    line-height: 1.2;
+}
+
+.reservoir .level {
+    font-size: 1.6rem;
+    font-weight: bold;
+    color: #444;
+    margin-bottom: 5px;
+}
+
+.reservoir .tag {
+    font-size: 0.85rem;
+    color: #666;
+}
+
+/* Empty columns */
+.empty-column {
+    background-color: transparent;
+    height: 100%;
+    grid-column: span 1; /* Takes up one grid space */
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .reservoir-details {
+        grid-template-columns: 1fr; /* Single column for small screens */
+    }
+
+    .reservoir.total-reservoir {
+        grid-row: span 1; /* Spans only one row on smaller screens */
+        height: auto; /* Adjust height to fit content */
+    }
 }
