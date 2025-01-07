@@ -4,33 +4,50 @@
 const MOCK_DATA = [
     [
         "TagName" => "WhyanbeelWTP.WHYLT5500_PV1",
+        "ReservoirName" => "Whyanbeel",
         "Units" => "%",
         "Description" => "LT5500 Treated Water Reservoir Level",
         "DateTime" => "2024-12-19T14:06:00.0000000Z",
         "Value" => 85.0437436785017,
+        "AverageDailyUse" => 160, // Average daily use in liters
+        "DailyUseChange" => -0.5, // Percentage change in daily use since last week
+        "DailyWaterLevelChange" => -2.0 // Percentage change in water level since last week
     ],
     [
         "TagName" => "MossmanWTP.MOSLT5133_PV1",
+        "ReservoirName" => "Mossman",
         "Units" => "%",
         "Description" => "LT5133 Clearwell Mossman Reservoir Level",
         "DateTime" => "2024-12-20T03:54:00.0000000Z",
         "Value" => 94.9312545157768,
+        "AverageDailyUse" => 156,
+        "DailyUseChange" => -0.8,
+        "DailyWaterLevelChange" => 1.5
     ],
     [
         "TagName" => "MossmanWTP.MOSLT5132_PV1",
+        "ReservoirName" => "Port Douglas",
         "Units" => "%",
         "Description" => "LT5132 Clearwell Port Douglas Reservoir Level",
         "DateTime" => "2024-12-20T03:54:15.0000000Z",
         "Value" => 92.8984355926514,
+        "AverageDailyUse" => 161,
+        "DailyUseChange" => 0.3,
+        "DailyWaterLevelChange" => 0.5
     ],
     [
         "TagName" => "DWTP.DAILT5175_PV1",
+        "ReservoirName" => "Daintree",
         "Units" => "%",
         "Description" => "LT5175 Treated Water Reservoir Level",
         "DateTime" => "2024-12-20T03:54:30.0000000Z",
         "Value" => 89.1531181335449,
+        "AverageDailyUse" => 163,
+        "DailyUseChange" => 1.0,
+        "DailyWaterLevelChange" => 2.5
     ],
 ];
+
 
 /**
  * Fetch data from the Douglas Website API or use mock data.
@@ -90,18 +107,22 @@ function render_reservoir_levels_widget($attributes) {
     try {
         $reservoirs = fetch_douglas_website_data(
             'https://www.odasa.com.au/douglas-website-data',
-            false // Set to true to use mock data for testing.
+            true // Set to true to use mock data for testing.
         );
     } catch (Exception $e) {
         return '<p>Error fetching reservoir data: ' . esc_html($e->getMessage()) . '</p>';
     }
 
-    // Calculate the total reservoir level.
+    // Calculate the total reservoir level and total daily usage.
     $total_level = 0;
+    $total_daily_use = 0;
     $reservoir_count = count($reservoirs);
+
     foreach ($reservoirs as $reservoir) {
         $total_level += $reservoir['Value'];
+        $total_daily_use += $reservoir['AverageDailyUse'];
     }
+
     $average_level = $reservoir_count > 0 ? round($total_level / $reservoir_count, 1) : 0;
 
     ob_start();
@@ -112,17 +133,27 @@ function render_reservoir_levels_widget($attributes) {
             
             <!-- Total Reservoir Level -->
             <div class="reservoir total-reservoir">
-                <h3>Total Reservoir Level</h3>
                 <div class="level"><?php echo esc_html($average_level); ?>%</div>
+                <h3>Total Reservoir Level</h3>
+                <div class="line-divider"></div>
+                <div class="usage">
+                <img src="<?php echo plugin_dir_url(__FILE__) . 'assets/images/water-icon.svg'; ?>" alt="Water Usage Icon" class="water-icon">
+                    <?php echo esc_html($total_daily_use); ?>L/day    
+                </div>
+                <div class="usage">Average Daily Use Per Person</div>
             </div>
 
             <!-- Column 2: First Two Reservoirs -->
             <div class="reservoir-column">
                 <?php foreach (array_slice($reservoirs, 0, 2) as $reservoir): ?>
                     <div class="reservoir">
-                        <h3><?php echo esc_html($reservoir['Description']); ?></h3>
                         <div class="level"><?php echo esc_html(round($reservoir['Value'], 1)); ?>%</div>
-                        <div class="tag"><?php echo esc_html($reservoir['TagName']); ?></div>
+                        <div class="line-divider"></div>
+                        <div class="usage">
+                            <img src="<?php echo plugin_dir_url(__FILE__) . 'assets/images/water-icon.svg'; ?>" alt="Water Usage Icon" class="water-icon">
+                            <?php echo esc_html($reservoir['AverageDailyUse']); ?>L/day
+                        </div>
+                        <div class="tag"><?php echo esc_html($reservoir['ReservoirName']); ?></div>
                     </div>
                 <?php endforeach; ?>
             </div>
@@ -131,9 +162,13 @@ function render_reservoir_levels_widget($attributes) {
             <div class="reservoir-column">
                 <?php foreach (array_slice($reservoirs, 2) as $reservoir): ?>
                     <div class="reservoir">
-                        <h3><?php echo esc_html($reservoir['Description']); ?></h3>
                         <div class="level"><?php echo esc_html(round($reservoir['Value'], 1)); ?>%</div>
-                        <div class="tag"><?php echo esc_html($reservoir['TagName']); ?></div>
+                        <div class="line-divider"></div>
+                        <div class="usage">
+                            <img src="<?php echo plugin_dir_url(__FILE__) . 'assets/images/water-icon.svg'; ?>" alt="Water Usage Icon" class="water-icon">
+                            <?php echo esc_html($reservoir['AverageDailyUse']); ?>L/day
+                        </div>
+                        <div class="tag"><?php echo esc_html($reservoir['ReservoirName']); ?></div>
                     </div>
                 <?php endforeach; ?>
             </div>
@@ -145,10 +180,15 @@ function render_reservoir_levels_widget($attributes) {
             </div>
 
         </div>
+
+        <div class="updated-daily">
+            ℹ️ Updated Daily
+        </div>
     </div>
     <?php
     return ob_get_clean();
 }
+
 
 
 

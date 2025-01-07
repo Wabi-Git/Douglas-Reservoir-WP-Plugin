@@ -3,7 +3,6 @@
  * It provides all the necessary props like the class name.
  */
 import { useBlockProps } from '@wordpress/block-editor';
-import { StaticReservoirLevels } from './components/ReservoirLevels';
 
 /**
  * The save function defines the way in which the different attributes should

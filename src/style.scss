@@ -28,7 +28,8 @@
     display: grid;
     grid-template-columns: 1fr 1fr 1fr 1fr 1fr; /* Five columns */
     gap: 20px;
-    align-items: stretch; /* Ensures all rows stretch to align properly */
+    align-items: stretch; /* Ensures child elements fill their row height */
+    height: 100%; /* Ensures parent height is consistent */
 }
 
 /* Total reservoir spans two rows */
@@ -68,14 +69,17 @@
 /* Individual reservoir styles */
 .reservoir {
     background-color: #eaf7ff;
-    padding: 20px;
+    padding: 10px;
     border-radius: 8px;
     text-align: center;
     box-shadow: 0 1px 6px rgba(0, 0, 0, 0.1);
-    transition: transform 0.2s, box-shadow 0.2s;
+    transition: transform 0.25s, box-shadow 0.25s;
     height: 100%; /* Ensures all blocks in a row match height */
     display: flex;
     flex-direction: column;
+    justify-content: center; /* Centers content vertically */
+    align-items: center; /* Centers content horizontally */
+    gap: 10px; /* Adds spacing between elements */
     position: relative; /* Needed for the fill effect */
     overflow: hidden; /* Ensures the fill doesn’t spill outside the container */
 }
@@ -88,11 +92,9 @@
 /* Text content above the fill */
 .reservoir h3,
 .reservoir .level,
-.reservoir .tag {
-    font-size: 1rem;
-    font-weight: 600;
-    color: #444;
-    margin-bottom: 10px;
+.reservoir .usage,
+.reservoir .tag,
+.line-divider {
     position: relative;
     z-index: 1; /* Ensures text is above the fill */
 }
@@ -104,9 +106,33 @@
     margin-bottom: 5px;
 }
 
+/* Water usage styles */
+.reservoir .usage {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: #555;
+    display: flex;
+    justify-content: center; /* Center horizontally */
+    align-items: center;
+    margin-top: 10px;
+    text-align: center; /* Ensures proper alignment of text */
+}
+
 .reservoir .tag {
-    font-size: 0.85rem;
-    color: #666;
+    font-size: 1.4rem; /* Larger text size */
+    font-weight: bold; /* Bold for emphasis */
+    color: #003366; /* Darker blue color */
+    text-transform: uppercase; /* Converts text to uppercase */
+    text-align: center; /* Centers the text */
+    margin-top: auto; /* Pushes the tag to the bottom flexibly */
+    padding-bottom: 0px; /* Add some space below the text */
+}
+
+/* Water icon style */
+.water-icon {
+	width: 10px;
+	height: 10px;
+	margin-right: 8px; /* space between text and icon */
 }
 
 /* Water fill effect */
@@ -119,6 +145,26 @@
     background-color: #a4cedb; /* Blue color for the fill */
     transition: height 1s ease-in-out; /* Smooth animation for the fill */
     z-index: 0; /* Below the text */
+}
+
+/* Updated Daily styling */
+.reservoir.total-reservoir .updated-daily {
+    font-size: 0.6rem;
+    color: #8b8b8b;
+    text-align: center;
+    margin-top: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+}
+
+/* Info icon styling */
+.reservoir.total-reservoir .info-icon {
+    font-size: 0.8;
+    color: #8b8b8b;
+    display: inline-block;
+    position: relative;
 }
 
 /* Empty columns */
@@ -137,6 +183,15 @@
     object-fit: cover; /* Ensures the map scales properly */
     grid-column: span 2; /* Takes up one grid space */
 }
+
+/* Line divider style */
+.line-divider {
+    width: 100%;
+    height: 1px;
+    background-color: #ddd; /* Light gray color */
+    margin: 10px 0; /* Add spacing above and below */
+}
+
 
 /* Responsive adjustments */
 @media (max-width: 768px) {
