@@ -118,12 +118,24 @@ function render_reservoir_levels_widget($attributes) {
     $total_daily_use = 0;
     $reservoir_count = count($reservoirs);
 
+    $total_water_level_change = 0;
+    $total_daily_use_change = 0;
+
     foreach ($reservoirs as $reservoir) {
         $total_level += $reservoir['Value'];
         $total_daily_use += $reservoir['AverageDailyUse'];
     }
 
+    // Iterate through reservoirs to sum up changes
+    foreach ($reservoirs as $reservoir) {
+        $total_water_level_change += $reservoir['DailyWaterLevelChange'];
+        $total_daily_use_change += $reservoir['DailyUseChange'];
+    }
+
+    // Round off the totals for better display
     $average_level = $reservoir_count > 0 ? round($total_level / $reservoir_count, 1) : 0;
+    $total_water_level_change = round($total_water_level_change, 1); // e.g., -0.5%
+    $total_daily_use_change = round($total_daily_use_change, 1);     // e.g., +0.5%
 
     // Define the map coordinates for each reservoir.
     $reservoir_map_coordinates = [
@@ -143,12 +155,29 @@ function render_reservoir_levels_widget($attributes) {
             <div class="reservoir total-reservoir">
                 <div class="level"><?php echo esc_html($average_level); ?>%</div>
                 <h3>Total Reservoir Level</h3>
-                <div class="line-divider"></div>
-                <div class="usage">
+                <div class="line-divider-thick"></div>
+                <div class="total-usage">
                     <img src="<?php echo plugin_dir_url(__FILE__) . 'assets/images/water-icon.svg'; ?>" alt="Water Usage Icon" class="water-icon">
                     <?php echo esc_html($total_daily_use); ?>L/day    
                 </div>
-                <div class="usage">Average Daily Use Per Person</div>
+                <div class="paragraph">Average Daily Use Per Person</div>
+                
+                <div class="line-divider-thick"></div>
+
+                <!-- Total daily usage change since last week -->
+                <div class="total-change">
+                    <strong>Daily Usage Change (Last Week):</strong> 
+                    <span class="<?php echo $total_daily_use_change >= 0 ? 'positive-change' : 'negative-change'; ?>">
+                        <?php echo esc_html($total_daily_use_change); ?>%
+                    </span>
+                </div>
+                <!-- Total water level change since last month -->
+                <div class="total-change">
+                    <strong>Water Level Change (Last Week):</strong> 
+                    <span class="<?php echo $total_water_level_change >= 0 ? 'positive-change' : 'negative-change'; ?>">
+                        <?php echo esc_html($total_water_level_change); ?>%
+                    </span>
+                </div>
             </div>
 
             <!-- Column 2: First Two Reservoirs -->
@@ -162,13 +191,13 @@ function render_reservoir_levels_widget($attributes) {
                         data-name="<?php echo esc_attr($reservoir['ReservoirName']); ?>" 
                         data-x="<?php echo esc_attr($coordinates['x']); ?>" 
                         data-y="<?php echo esc_attr($coordinates['y']); ?>">
+                        <div class="tag"><?php echo esc_html($reservoir['ReservoirName']); ?></div>
                         <div class="level"><?php echo esc_html(round($reservoir['Value'], 1)); ?>%</div>
                         <div class="line-divider"></div>
                         <div class="usage">
                             <img src="<?php echo plugin_dir_url(__FILE__) . 'assets/images/water-icon.svg'; ?>" alt="Water Usage Icon" class="water-icon">
                             <?php echo esc_html($reservoir['AverageDailyUse']); ?>L/day
                         </div>
-                        <div class="tag"><?php echo esc_html($reservoir['ReservoirName']); ?></div>
                     </div>
                 <?php endforeach; ?>
             </div>
@@ -184,13 +213,13 @@ function render_reservoir_levels_widget($attributes) {
                         data-name="<?php echo esc_attr($reservoir['ReservoirName']); ?>" 
                         data-x="<?php echo esc_attr($coordinates['x']); ?>" 
                         data-y="<?php echo esc_attr($coordinates['y']); ?>">
+                        <div class="tag"><?php echo esc_html($reservoir['ReservoirName']); ?></div>
                         <div class="level"><?php echo esc_html(round($reservoir['Value'], 1)); ?>%</div>
                         <div class="line-divider"></div>
                         <div class="usage">
                             <img src="<?php echo plugin_dir_url(__FILE__) . 'assets/images/water-icon.svg'; ?>" alt="Water Usage Icon" class="water-icon">
                             <?php echo esc_html($reservoir['AverageDailyUse']); ?>L/day
                         </div>
-                        <div class="tag"><?php echo esc_html($reservoir['ReservoirName']); ?></div>
                     </div>
                 <?php endforeach; ?>
             </div>
