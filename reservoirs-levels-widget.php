@@ -11,7 +11,7 @@ const MOCK_DATA = [
         "Value" => 85.0437436785017,
         "AverageDailyUse" => 160, // Average daily use in liters
         "DailyUseChange" => -0.5, // Percentage change in daily use since last week
-        "DailyWaterLevelChange" => -2.0 // Percentage change in water level since last week
+        "MonthWaterLevelChange" => -2.0 // Percentage change in water level since last month
     ],
     [
         "TagName" => "MossmanWTP.MOSLT5133_PV1",
@@ -22,7 +22,7 @@ const MOCK_DATA = [
         "Value" => 94.9312545157768,
         "AverageDailyUse" => 156,
         "DailyUseChange" => -0.8,
-        "DailyWaterLevelChange" => 1.5
+        "MonthWaterLevelChange" => 1.5
     ],
     [
         "TagName" => "MossmanWTP.MOSLT5132_PV1",
@@ -32,8 +32,8 @@ const MOCK_DATA = [
         "DateTime" => "2024-12-20T03:54:15.0000000Z",
         "Value" => 92.8984355926514,
         "AverageDailyUse" => 161,
-        "DailyUseChange" => 0.3,
-        "DailyWaterLevelChange" => 0.5
+        "DailyUseChange" => -0.3,
+        "MonthWaterLevelChange" => 0.5
     ],
     [
         "TagName" => "DWTP.DAILT5175_PV1",
@@ -43,8 +43,8 @@ const MOCK_DATA = [
         "DateTime" => "2024-12-20T03:54:30.0000000Z",
         "Value" => 89.1531181335449,
         "AverageDailyUse" => 163,
-        "DailyUseChange" => 1.0,
-        "DailyWaterLevelChange" => 2.5
+        "DailyUseChange" => -1.0,
+        "MonthWaterLevelChange" => 2.5
     ],
 ];
 
@@ -128,7 +128,7 @@ function render_reservoir_levels_widget($attributes) {
 
     // Iterate through reservoirs to sum up changes
     foreach ($reservoirs as $reservoir) {
-        $total_water_level_change += $reservoir['DailyWaterLevelChange'];
+        $total_water_level_change += $reservoir['MonthWaterLevelChange'];
         $total_daily_use_change += $reservoir['DailyUseChange'];
     }
 
@@ -161,22 +161,24 @@ function render_reservoir_levels_widget($attributes) {
                     <?php echo esc_html($total_daily_use); ?>L/day    
                 </div>
                 <div class="paragraph">Average Daily Use Per Person</div>
-                
-                <div class="line-divider-thick"></div>
 
-                <!-- Total daily usage change since last week -->
-                <div class="total-change">
-                    <strong>Daily Usage Change (Last Week):</strong> 
-                    <span class="<?php echo $total_daily_use_change >= 0 ? 'positive-change' : 'negative-change'; ?>">
-                        <?php echo esc_html($total_daily_use_change); ?>%
-                    </span>
-                </div>
-                <!-- Total water level change since last month -->
-                <div class="total-change">
-                    <strong>Water Level Change (Last Week):</strong> 
-                    <span class="<?php echo $total_water_level_change >= 0 ? 'positive-change' : 'negative-change'; ?>">
-                        <?php echo esc_html($total_water_level_change); ?>%
-                    </span>
+                <!-- New Boxes -->
+                <div class="grounding-boxes">
+                    <!-- Left Box: Total Daily Use Change since last week-->
+                    <div class="grounding-box">
+                        <div class="box-value <?php echo $total_daily_use_change >= 0 ? 'positive' : 'negative'; ?>">
+                            <?php echo esc_html($total_daily_use_change); ?>%
+                        </div>
+                        <span class="label">Last Month</span>
+                    </div>
+
+                    <!-- Right Box: Total Water Level Change since last month -->
+                    <div class="grounding-box">
+                        <div class="box-value <?php echo $total_water_level_change >= 0 ? 'positive' : 'negative'; ?>">
+                            <?php echo esc_html($total_water_level_change); ?>% 
+                        </div>
+                        <span class="label">Last Week</span>
+                    </div>
                 </div>
             </div>
 

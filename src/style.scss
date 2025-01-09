@@ -81,6 +81,61 @@
     margin-right: 15px;
     text-align: center; /* Ensures proper alignment of text */
 }
+
+/* Grounding Boxes Container */
+.grounding-boxes {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+/* Individual Grounding Box */
+.grounding-box {
+    background-color: #f0f8fa; /* Light blue for contrast */
+    padding: 15px;
+    border-radius: 8px;
+    flex: 1; /* Equal width for both boxes */
+    text-align: center;
+    //box-shadow: 0 1px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+/* Box Title */
+.grounding-box .box-title {
+    font-size: 1rem;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+/* Box Value */
+.grounding-box .box-value {
+    font-size: 1.4rem;
+    font-weight: bold;
+    color: #444;
+}
+
+/* Positive and Negative Value Colours */
+.grounding-box .box-value.positive {
+    color: #28a745; /* Green for positive */
+}
+
+.grounding-box .box-value.negative {
+    color: #d9534f; /* Red for negative */
+}
+
+/* Value Label */
+.grounding-box .label {
+    font-size: 0.8rem;
+    color: #8b8b8b;
+    text-align: center;
+    margin-top: 10px;
+    display: flex;
+    justify-content: left;
+    gap: 10px;
+}
+
 /* Individual reservoir columns */
 .reservoir-column {
     display: flex;
@@ -118,6 +173,7 @@
 .reservoir-details .total-reservoir .total-usage,
 .reservoir-details .total-reservoir .paragraph,
 .reservoir-details .total-reservoir .total-change,
+.reservoir-details .total-reservoir .grounding-boxes,
 .reservoir .tag,
 .line-divider-thick,
 .line-divider {
