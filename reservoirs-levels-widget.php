@@ -139,10 +139,10 @@ function render_reservoir_levels_widget($attributes) {
 
     // Define the map coordinates for each reservoir.
     $reservoir_map_coordinates = [
-        'Daintree' => ['x' => 42.5, 'y' => 48.5],
-        'Whyanbeel' => ['x' => 55.0, 'y' => 64.8],
-        'Mossman' => ['x' => 58.5, 'y' => 68.6],
-        'Port Douglas' => ['x' => 72.5, 'y' => 74.6],
+        'Daintree' => ['x' => 35, 'y' => 47],
+        'Whyanbeel' => ['x' => 43, 'y' => 62],
+        'Mossman' => ['x' => 46.5, 'y' => 65.5],
+        'Port Douglas' => ['x' => 60, 'y' => 71.5],
     ];
 
     ob_start();
@@ -157,7 +157,7 @@ function render_reservoir_levels_widget($attributes) {
                 <h3>Total Reservoir Level</h3>
                 <div class="line-divider-thick"></div>
                 <div class="total-usage">
-                    <img src="<?php echo plugin_dir_url(__FILE__) . 'assets/images/water-icon.svg'; ?>" alt="Water Usage Icon" class="water-icon">
+                    <img src="<?php echo plugin_dir_url(__FILE__) . 'assets/images/water-icon.svg'; ?>" alt="Water Usage Icon" class="total-water-icon">
                     <?php echo esc_html($total_daily_use); ?>L/day    
                 </div>
                 <div class="paragraph">Average Daily Use Per Person</div>

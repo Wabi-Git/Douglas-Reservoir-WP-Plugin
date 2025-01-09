@@ -58,7 +58,7 @@
 .reservoir-details .total-reservoir .level {
     font-size: 2rem;
     font-weight: bold;
-    color: #333;
+    color: #444;
 }
 
 .reservoir-details .total-reservoir .paragraph{
@@ -68,6 +68,7 @@
     display: flex;
     justify-content: center;
     text-align: center;
+    margin-top: 0px;
 }
 
 .reservoir-details .total-reservoir .total-usage {
@@ -77,9 +78,10 @@
     display: flex;
     justify-content: center; /* Center horizontally */
     align-items: center;
-    margin-top: 0px;
+    margin-top: 10px;
     margin-right: 15px;
     text-align: center; /* Ensures proper alignment of text */
+    line-height: 1.2;
 }
 
 /* Hover effect triggered by total-reservoir */
@@ -87,7 +89,6 @@
     content: attr(data-hover); /* Show hover text */
     transition: content 0.3s ease-in-out;
     font-size: 0.8rem;
-    color: #555;
     line-height: 1.2;
 }
 
@@ -95,7 +96,7 @@
 .grounding-boxes {
     display: flex;
     justify-content: space-between;
-    gap: 10px;
+    gap: 5px;
     margin-top: 20px;
 }
 
@@ -114,6 +115,7 @@
 .grounding-box .box-title {
     font-size: 1rem;
     font-weight: bold;
+    color: #8b8b8b;
     margin-bottom: 10px;
 }
 
@@ -198,12 +200,20 @@
     z-index: 1; /* Ensures text is above the fill */
 }
 
+.reservoir .tag {
+    font-size: 1.4rem;
+    font-weight: bold;
+    color: #444;
+    text-align: center;
+}
+
+
 .reservoir .level {
     font-size: 1.8rem;
     font-weight: bold;
     color: #444;
-    margin-bottom: 0px;
-    margin-top: 10px;
+    margin-bottom: 5px;
+    margin-top: 0px;
 }
 
 /* Water usage styles */
@@ -220,17 +230,18 @@
 }
 
 
-.reservoir .tag {
-    font-size: 1.4rem;
-    font-weight: bold;
-    color: #444;
-    text-align: center;
-}
 
 /* Water icon style */
 .water-icon {
     width: 10px;
 	height: 10px;
+	margin-right: 8px; /* space between text and icon */
+}
+
+/* Water icon style */
+.total-water-icon {
+    width: 15px;
+	height: 15px;
 	margin-right: 8px; /* space between text and icon */
 }
 
