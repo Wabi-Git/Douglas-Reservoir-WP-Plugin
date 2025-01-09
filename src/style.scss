@@ -177,11 +177,23 @@
 /* Map style */
 .map-container {
     background-color: transparent;
+    position: relative;
     opacity: 0.2;
     width: 100%;
     height: 100%;
     object-fit: cover; /* Ensures the map scales properly */
     grid-column: span 2; /* Takes up one grid space */
+}
+
+.blue-dot {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    background-color: blue;
+    border-radius: 50%;
+    transform: scale(0);
+    transition: transform 0.3s ease, left 0.3s ease, top 0.3s ease;
+    pointer-events: none;
 }
 
 /* Line divider style */
@@ -191,6 +203,7 @@
     background-color: #ddd; /* Light gray color */
     margin: 10px 0; /* Add spacing above and below */
 }
+
 
 
 /* Responsive adjustments */

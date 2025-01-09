@@ -36,7 +36,7 @@ document.addEventListener("DOMContentLoaded", () => {
             reservoir.querySelector(".level").textContent.replace("%", "")
         );
 
-        // Get the reservoir-fill div
+        // Create and append the reservoir-fill div
         let fill = document.createElement("div");
         fill.classList.add("reservoir-fill");
         reservoir.appendChild(fill);
@@ -46,5 +46,42 @@ document.addEventListener("DOMContentLoaded", () => {
             fill.style.height = `${percentage}%`;
         }, 100); // Add a slight delay for smoother animation
     });
-});
 
+    // Blue dot hover functionality
+    const blueDot = document.querySelector(".blue-dot");
+    const mapContainer = document.querySelector(".map-container");
+
+    reservoirs.forEach((reservoir) => {
+        // Ignore hover events for the "total-reservoir"
+        if (reservoir.classList.contains("total-reservoir")) {
+            return;
+        }
+
+        reservoir.addEventListener("mouseenter", () => {
+            // Get the data-x and data-y attributes for positioning
+            const xPercent = parseFloat(reservoir.getAttribute("data-x")); // Percentage from data attribute
+            const yPercent = parseFloat(reservoir.getAttribute("data-y"));
+
+            // Get actual pixel dimensions of the map container
+            const containerWidth = mapContainer.offsetWidth;
+            const containerHeight = mapContainer.offsetHeight;
+
+            // Calculate exact pixel positions
+            const x = (xPercent / 100) * containerWidth;
+            const y = (yPercent / 100) * containerHeight;
+
+            // Update blue dot position
+            if (blueDot) {
+                blueDot.style.left = `${x}px`;
+                blueDot.style.top = `${y}px`;
+                blueDot.style.transform = "scale(1)";
+            }
+        });
+
+        reservoir.addEventListener("mouseleave", () => {
+            if (blueDot) {
+                blueDot.style.transform = "scale(0)";
+            }
+        });
+    });
+});

@@ -125,6 +125,14 @@ function render_reservoir_levels_widget($attributes) {
 
     $average_level = $reservoir_count > 0 ? round($total_level / $reservoir_count, 1) : 0;
 
+    // Define the map coordinates for each reservoir.
+    $reservoir_map_coordinates = [
+        'Daintree' => ['x' => 42.5, 'y' => 48.5],
+        'Whyanbeel' => ['x' => 55.0, 'y' => 64.8],
+        'Mossman' => ['x' => 58.5, 'y' => 68.6],
+        'Port Douglas' => ['x' => 72.5, 'y' => 74.6],
+    ];
+
     ob_start();
     ?>
     <div class="reservoir-widget">
@@ -137,7 +145,7 @@ function render_reservoir_levels_widget($attributes) {
                 <h3>Total Reservoir Level</h3>
                 <div class="line-divider"></div>
                 <div class="usage">
-                <img src="<?php echo plugin_dir_url(__FILE__) . 'assets/images/water-icon.svg'; ?>" alt="Water Usage Icon" class="water-icon">
+                    <img src="<?php echo plugin_dir_url(__FILE__) . 'assets/images/water-icon.svg'; ?>" alt="Water Usage Icon" class="water-icon">
                     <?php echo esc_html($total_daily_use); ?>L/day    
                 </div>
                 <div class="usage">Average Daily Use Per Person</div>
@@ -146,7 +154,14 @@ function render_reservoir_levels_widget($attributes) {
             <!-- Column 2: First Two Reservoirs -->
             <div class="reservoir-column">
                 <?php foreach (array_slice($reservoirs, 0, 2) as $reservoir): ?>
-                    <div class="reservoir">
+                    <?php
+                        $coordinates = $reservoir_map_coordinates[$reservoir['ReservoirName']] ?? ['x' => 0, 'y' => 0];
+                    ?>
+                    <div 
+                        class="reservoir" 
+                        data-name="<?php echo esc_attr($reservoir['ReservoirName']); ?>" 
+                        data-x="<?php echo esc_attr($coordinates['x']); ?>" 
+                        data-y="<?php echo esc_attr($coordinates['y']); ?>">
                         <div class="level"><?php echo esc_html(round($reservoir['Value'], 1)); ?>%</div>
                         <div class="line-divider"></div>
                         <div class="usage">
@@ -161,7 +176,14 @@ function render_reservoir_levels_widget($attributes) {
             <!-- Column 3: Last Two Reservoirs -->
             <div class="reservoir-column">
                 <?php foreach (array_slice($reservoirs, 2) as $reservoir): ?>
-                    <div class="reservoir">
+                    <?php
+                        $coordinates = $reservoir_map_coordinates[$reservoir['ReservoirName']] ?? ['x' => 0, 'y' => 0];
+                    ?>
+                    <div 
+                        class="reservoir" 
+                        data-name="<?php echo esc_attr($reservoir['ReservoirName']); ?>" 
+                        data-x="<?php echo esc_attr($coordinates['x']); ?>" 
+                        data-y="<?php echo esc_attr($coordinates['y']); ?>">
                         <div class="level"><?php echo esc_html(round($reservoir['Value'], 1)); ?>%</div>
                         <div class="line-divider"></div>
                         <div class="usage">
@@ -173,9 +195,9 @@ function render_reservoir_levels_widget($attributes) {
                 <?php endforeach; ?>
             </div>
 
-            <!-- Column 4: Empty -->
             <!-- SVG Map -->
             <div class="map-container">
+                <div class="blue-dot"></div>
                 <?php echo file_get_contents(plugin_dir_path(__FILE__) . 'assets/images/map.svg'); ?>
             </div>
 
@@ -188,6 +210,7 @@ function render_reservoir_levels_widget($attributes) {
     <?php
     return ob_get_clean();
 }
+
 
 
 
