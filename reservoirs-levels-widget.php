@@ -169,7 +169,11 @@ function render_reservoir_levels_widget($attributes) {
                         <div class="box-value <?php echo $total_daily_use_change >= 0 ? 'positive' : 'negative'; ?>">
                             <?php echo esc_html($total_daily_use_change); ?>%
                         </div>
-                        <span class="label">Last Month</span>
+                        <span class="label" 
+                            data-default="Change in Use" 
+                            data-hover="Change In Use Per Person Since Last Month">
+                            
+                        </span>
                     </div>
 
                     <!-- Right Box: Total Water Level Change since last month -->
@@ -177,7 +181,11 @@ function render_reservoir_levels_widget($attributes) {
                         <div class="box-value <?php echo $total_water_level_change >= 0 ? 'positive' : 'negative'; ?>">
                             <?php echo esc_html($total_water_level_change); ?>% 
                         </div>
-                        <span class="label">Last Week</span>
+                        <span class="label" 
+                            data-default="Change in Total" 
+                            data-hover="Change in Total Reservoir Level since Last Week">
+                            
+                        </span>
                     </div>
                 </div>
             </div>
