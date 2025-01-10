@@ -17,6 +17,18 @@
 	exit; // Exit if accessed directly.
 }
 
+// PHP: In your main plugin file
+function enqueue_plugin_assets() {
+    $plugin_url = plugin_dir_url(__FILE__);
+    wp_enqueue_script('reservoir-widget-script', $plugin_url . 'assets/js/widget.js', array('wp-blocks', 'wp-element', 'wp-editor'), null, true);
+
+    // Pass dynamic asset URL to the JavaScript
+    wp_localize_script('reservoir-widget-script', 'PluginAssets', array(
+        'images' => $plugin_url . 'assets/images/',
+    ));
+}
+add_action('enqueue_block_editor_assets', 'enqueue_plugin_assets');
+
 // Define mock data as an array for development and testing purposes.
 const MOCK_DATA = [
     [
@@ -181,19 +193,8 @@ function render_reservoir_levels_widget($attributes) {
 
                 <!-- New Boxes -->
                 <div class="grounding-boxes">
-                    <!-- Left Box: Total Daily Use Change since last week-->
-                    <div class="grounding-box">
-                        <div class="box-value <?php echo $total_daily_use_change >= 0 ? 'positive' : 'negative'; ?>">
-                            <?php echo esc_html($total_daily_use_change); ?>%
-                        </div>
-                        <span class="label" 
-                            data-default="Change in Use" 
-                            data-hover="Change In Use Per Person Since Last Month">
-                            
-                        </span>
-                    </div>
 
-                    <!-- Right Box: Total Water Level Change since last month -->
+                    <!-- Left Box: Total Water Level Change since last month -->
                     <div class="grounding-box">
                         <div class="box-value <?php echo $total_water_level_change >= 0 ? 'positive' : 'negative'; ?>">
                             <?php echo esc_html($total_water_level_change); ?>% 
@@ -201,6 +202,18 @@ function render_reservoir_levels_widget($attributes) {
                         <span class="label" 
                             data-default="Change in Total" 
                             data-hover="Change in Total Reservoir Level since Last Week">
+                            
+                        </span>
+                    </div>
+
+                    <!-- Right Box: Total Daily Use Change since last week-->
+                    <div class="grounding-box">
+                        <div class="box-value <?php echo $total_daily_use_change >= 0 ? 'positive' : 'negative'; ?>">
+                            <?php echo esc_html($total_daily_use_change); ?>%
+                        </div>
+                        <span class="label" 
+                            data-default="Change in Use" 
+                            data-hover="Change In Use Per Person Since Last Month">
                             
                         </span>
                     </div>

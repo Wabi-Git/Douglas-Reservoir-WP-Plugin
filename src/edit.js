@@ -1,5 +1,4 @@
 import React, { Component, createRef } from "react";
-import { useBlockProps } from "@wordpress/block-editor";
 
 const MOCK_DATA = [
     {
@@ -55,6 +54,7 @@ class Edit extends Component {
         super(props);
         // Create refs for each reservoir
         this.reservoirRefs = [];
+        this.mapContainerRef = createRef();
     }
 
     // Dynamically create refs for reservoirs
@@ -66,6 +66,27 @@ class Edit extends Component {
     };
 
     componentDidMount() {
+        console.log("mounting...");
+
+        // Dynamically fetch the SVG content
+        const mapSvgUrl = `${PluginAssets.images}map.svg`; // Use the dynamically provided assets path
+        fetch(mapSvgUrl)
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error("Failed to fetch map.svg");
+                }
+                return response.text();
+            })
+            .then((svgContent) => {
+                // Inject the SVG content directly into the map-container
+                if (this.mapContainerRef.current) {
+                    this.mapContainerRef.current.innerHTML += svgContent;
+                }
+            })
+            .catch((error) => {
+                console.error("Error fetching the SVG:", error);
+            });
+
         // Iterate over refs and perform DOM manipulation
         this.reservoirRefs.forEach((ref) => {
             if (ref.current) {
@@ -102,8 +123,8 @@ class Edit extends Component {
                                             <div className="line-divider-thick"></div>
                                             <div className="total-usage">
                                                 <img
-                                                    decoding="async" // TODO: need to remove the hardcoded base url here the correct map.svg from assets
-                                                    src="http://test-port-douglas-site.local/wp-content/plugins/Douglas Reservoir WP Plugin/assets/images/water-icon.svg"
+                                                    decoding="async"
+                                                    src={`${PluginAssets.images}water-icon.svg`} // Dynamically fetch the correct URL
                                                     alt="Water Usage Icon"
                                                     className="total-water-icon"
                                                 />
@@ -112,19 +133,19 @@ class Edit extends Component {
                                             <div className="paragraph">Average Daily Use Per Person</div>
                                             <div className="grounding-boxes">
                                                 <div className="grounding-box">
-                                                    <div className="box-value negative">-2.6%</div>
-                                                    <span
-                                                        className="label"
-                                                        data-default="Change in Use"
-                                                        data-hover="Change In Use Per Person Since Last Month"
-                                                    ></span>
-                                                </div>
-                                                <div className="grounding-box">
                                                     <div className="box-value positive">2.5%</div>
                                                     <span
                                                         className="label"
                                                         data-default="Change in Total"
                                                         data-hover="Change in Total Reservoir Level since Last Week"
+                                                    ></span>
+                                                </div>
+                                                <div className="grounding-box">
+                                                    <div className="box-value negative">-2.6%</div>
+                                                    <span
+                                                        className="label"
+                                                        data-default="Change in Use"
+                                                        data-hover="Change In Use Per Person Since Last Month"
                                                     ></span>
                                                 </div>
                                             </div>
@@ -145,10 +166,10 @@ class Edit extends Component {
                                                 <div className="line-divider"></div>
                                                 <div className="usage">
                                                     <img
-                                                        decoding="async" // TODO: need to remove the hardcoded base url here the correct map.svg from assets
-                                                        src="http://test-port-douglas-site.local/wp-content/plugins/Douglas Reservoir WP Plugin/assets/images/water-icon.svg"
+                                                        decoding="async"
+                                                        src={`${PluginAssets.images}water-icon.svg`} // Dynamically fetch the correct URL
                                                         alt="Water Usage Icon"
-                                                        className="water-icon"
+                                                        className="total-water-icon"
                                                     />
                                                     {reservoir.AverageDailyUse}L/day
                                                 </div>
@@ -170,29 +191,28 @@ class Edit extends Component {
                                                 <div className="line-divider"></div>
                                                 <div className="usage">
                                                     <img
-                                                        decoding="async" // TODO: need to remove the hardcoded base url here the correct map.svg from assets
-                                                        src="http://test-port-douglas-site.local/wp-content/plugins/Douglas Reservoir WP Plugin/assets/images/water-icon.svg"
+                                                        decoding="async"
+                                                        src={`${PluginAssets.images}water-icon.svg`} // Dynamically fetch the correct URL
                                                         alt="Water Usage Icon"
-                                                        className="water-icon"
+                                                        className="total-water-icon"
                                                     />
                                                     {reservoir.AverageDailyUse}L/day
                                                 </div>
                                             </div>
                                         ))}
                                     </div>
-                                    <div className="map-container">
+                                    <div 
+                                        className="map-container"
+                                        ref={this.mapContainerRef}
+                                    >
                                         <div
                                             className="blue-dot"
-                                            style={{ left: "222.832px", top: "286px", transform: "scale(0)" }}
+                                            style={{
+                                                left: "222.832px",
+                                                top: "286px",
+                                                transform: "scale(0)",
+                                            }}
                                         ></div>
-                                        <svg // TODO: need to pull the correct map.svg from assets
-                                            id="Layer_1"
-                                            data-name="Layer 1"
-                                            xmlns="http://www.w3.org/2000/svg"
-                                            viewBox="0 0 766.98 1005.03"
-                                        >
-                                            <path className="cls-2" d="..." />
-                                        </svg>
                                     </div>
                                 </div>
                                 <div className="updated-daily">ℹ️ Updated Daily</div>
