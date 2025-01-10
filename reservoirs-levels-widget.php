@@ -1,6 +1,6 @@
 <?php
 
-// Define mock data as an array.
+// Define mock data as an array for development and testing purposes.
 const MOCK_DATA = [
     [
         "TagName" => "WhyanbeelWTP.WHYLT5500_PV1",
@@ -48,7 +48,6 @@ const MOCK_DATA = [
     ],
 ];
 
-
 /**
  * Fetch data from the Douglas Website API or use mock data.
  *
@@ -57,29 +56,29 @@ const MOCK_DATA = [
  * @return array The data from the API or mock data.
  * @throws Exception If the API request fails.
  */
-function fetch_douglas_website_data( $url = 'https://www.odasa.com.au/douglas-website-data', $mock = false ) {
+function fetch_douglas_website_data($url = 'https://www.odasa.com.au/douglas-website-data', $mock = false) {
     // Return mock data if the mock flag is true.
-    if ( $mock ) {
+    if ($mock) {
         return MOCK_DATA;
     }
 
     // Fetch live data from the API.
-    $response = wp_remote_get( $url );
+    $response = wp_remote_get($url);
 
     // Check if the request resulted in an error.
-    if ( is_wp_error( $response ) ) {
-        throw new Exception( 'Network request failed: ' . $response->get_error_message() );
+    if (is_wp_error($response)) {
+        throw new Exception('Network request failed: ' . $response->get_error_message());
     }
 
     // Get the body of the response.
-    $body = wp_remote_retrieve_body( $response );
+    $body = wp_remote_retrieve_body($response);
 
     // Decode the JSON response into a PHP array.
-    $data = json_decode( $body, true );
+    $data = json_decode($body, true);
 
     // Check for JSON parsing errors.
-    if ( json_last_error() !== JSON_ERROR_NONE ) {
-        throw new Exception( 'Failed to parse JSON response: ' . json_last_error_msg() );
+    if (json_last_error() !== JSON_ERROR_NONE) {
+        throw new Exception('Failed to parse JSON response: ' . json_last_error_msg());
     }
 
     return $data;
@@ -89,12 +88,12 @@ function fetch_douglas_website_data( $url = 'https://www.odasa.com.au/douglas-we
  * Registers the block using the metadata loaded from the `block.json` file.
  */
 function create_block_reservoir_levels_widget_block_init() {
-    register_block_type( __DIR__ . '/build', array(
+    // Register the block and associate a render callback function.
+    register_block_type(__DIR__ . '/build', array(
         'render_callback' => 'render_reservoir_levels_widget',
-    ) );
+    ));
 }
-add_action( 'init', 'create_block_reservoir_levels_widget_block_init' );
-
+add_action('init', 'create_block_reservoir_levels_widget_block_init');
 
 /**
  * Render callback for the reservoir levels widget block.
@@ -126,7 +125,7 @@ function render_reservoir_levels_widget($attributes) {
         $total_daily_use += $reservoir['AverageDailyUse'];
     }
 
-    // Iterate through reservoirs to sum up changes
+    // Iterate through reservoirs to sum up changes.
     foreach ($reservoirs as $reservoir) {
         $total_water_level_change += $reservoir['MonthWaterLevelChange'];
         $total_daily_use_change += $reservoir['DailyUseChange'];
