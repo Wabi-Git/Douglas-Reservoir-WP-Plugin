@@ -1,4 +1,21 @@
 <?php
+/**
+ * Plugin Name:       Douglas Shire Council's Reservoir Levels Widget
+ * Description:       This custom block retrieves the level data from https://www.odasa.com.au/douglas-website-data and formats it for Douglas Shire Council's website.
+ * Version:           0.1.0
+ * Requires at least: 6.6.2
+ * Requires PHP:      7.4
+ * Author:            The WordPress Contributors, SAFEgroup Automation, Monique Kuhn
+ * License:           N/A
+ * License URI:       N/A
+ * Text Domain:       reservoir-levels-widget
+ *
+ * @package CreateBlock
+ */
+
+ if ( ! defined( 'ABSPATH' ) ) {
+	exit; // Exit if accessed directly.
+}
 
 // Define mock data as an array for development and testing purposes.
 const MOCK_DATA = [
@@ -91,6 +108,7 @@ function create_block_reservoir_levels_widget_block_init() {
     // Register the block and associate a render callback function.
     register_block_type(__DIR__ . '/build', array(
         'render_callback' => 'render_reservoir_levels_widget',
+        'icon' => 'chart-bar', // Dashicon for a bar chart
     ));
 }
 add_action('init', 'create_block_reservoir_levels_widget_block_init');
