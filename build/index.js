@@ -59,6 +59,24 @@ const MOCK_DATA = [{
   DailyUseChange: -1.0,
   MonthWaterLevelChange: 2.5
 }];
+const RESERVOIR_COORDINATES = {
+  Whyanbeel: {
+    x: 43,
+    y: 48
+  },
+  Mossman: {
+    x: 56.5,
+    y: 65.5
+  },
+  PortDouglas: {
+    x: 73,
+    y: 71.5
+  },
+  Daintree: {
+    x: 53,
+    y: 62
+  }
+};
 
 // use react class component instead of function component for clearer lifecycle management
 
@@ -68,6 +86,7 @@ class Edit extends react__WEBPACK_IMPORTED_MODULE_0__.Component {
     // Create refs for each reservoir
     this.reservoirRefs = [];
     this.mapContainerRef = (0,react__WEBPACK_IMPORTED_MODULE_0__.createRef)();
+    this.blueDotRef = (0,react__WEBPACK_IMPORTED_MODULE_0__.createRef)();
   }
 
   // Dynamically create refs for reservoirs
@@ -98,6 +117,7 @@ class Edit extends react__WEBPACK_IMPORTED_MODULE_0__.Component {
 
     // Iterate over refs and perform DOM manipulation
     this.reservoirRefs.forEach(ref => {
+      // update water levels
       if (ref.current) {
         const levelElement = ref.current.querySelector(".level");
         const percentage = parseFloat(levelElement.getAttribute("data-level"));
@@ -108,10 +128,92 @@ class Edit extends react__WEBPACK_IMPORTED_MODULE_0__.Component {
           fill.style.height = `${percentage}%`;
         }, 100);
       }
+
+      // attach event handlers
+      if (ref.current) {
+        ref.current.addEventListener("mouseenter", () => this.handleMouseEnter(ref.current));
+        ref.current.addEventListener("mouseleave", this.handleMouseLeave);
+        ref.current.addEventListener("click", () => this.handleClick(ref.current));
+      }
     });
+    window.addEventListener("resize", this.handleResize);
   }
+  componentWillUnmount() {
+    this.reservoirRefs.forEach(ref => {
+      if (ref.current) {
+        ref.current.removeEventListener("mouseenter", this.handleMouseEnter);
+        ref.current.removeEventListener("mouseleave", this.handleMouseLeave);
+        ref.current.removeEventListener("click", this.handleClick);
+      }
+    });
+    window.removeEventListener("resize", this.handleResize);
+  }
+  handleMouseEnter = reservoir => {
+    const {
+      x,
+      y
+    } = this.calculateDotPosition(reservoir);
+    if (this.blueDotRef.current) {
+      this.blueDotRef.current.style.left = `${x}px`;
+      this.blueDotRef.current.style.top = `${y}px`;
+      this.blueDotRef.current.style.transform = "scale(1)";
+    }
+  };
+  handleMouseLeave = () => {
+    if (this.blueDotRef.current) {
+      this.blueDotRef.current.style.transform = "scale(0)";
+    }
+  };
+  handleClick = reservoir => {
+    const {
+      x,
+      y
+    } = this.calculateDotPosition(reservoir);
+    if (this.blueDotRef.current) {
+      const isActive = this.blueDotRef.current.style.transform === "scale(1)";
+      if (isActive) {
+        this.handleMouseLeave();
+      } else {
+        this.blueDotRef.current.style.left = `${x}px`;
+        this.blueDotRef.current.style.top = `${y}px`;
+        this.blueDotRef.current.style.transform = "scale(1)";
+      }
+    }
+  };
+  handleResize = () => {
+    const activeReservoir = this.reservoirRefs.find(ref => ref.current && ref.current.matches(":hover"));
+    if (activeReservoir) {
+      const {
+        x,
+        y
+      } = this.calculateDotPosition(activeReservoir.current);
+      if (this.blueDotRef.current) {
+        this.blueDotRef.current.style.left = `${x}px`;
+        this.blueDotRef.current.style.top = `${y}px`;
+      }
+    }
+  };
+  calculateDotPosition = reservoir => {
+    const xPercent = parseFloat(reservoir.getAttribute("data-x"));
+    const yPercent = parseFloat(reservoir.getAttribute("data-y"));
+    const svgElement = this.mapContainerRef.current.querySelector("svg");
+    if (!svgElement) return {
+      x: 0,
+      y: 0
+    };
+    const svgRect = svgElement.getBoundingClientRect();
+    const x = xPercent / 100 * svgRect.width;
+    const y = yPercent / 100 * svgRect.height;
+    return {
+      x,
+      y
+    };
+  };
   getRoundedValue = value => parseFloat(value.toFixed(1));
   render() {
+    const reservoirsByColumn = Array.from({
+      length: Math.ceil(MOCK_DATA.length / 2)
+    }, (_, i) => MOCK_DATA.slice(i * 2, i * 2 + 2));
     return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("div", {
       className: "wp-block-create-block-reservoir-levels-widget",
       children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("div", {
@@ -176,64 +278,50 @@ class Edit extends react__WEBPACK_IMPORTED_MODULE_0__.Component {
                       })]
                     })]
                   })
-                }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("div", {
+                }), reservoirsByColumn.map((column, columnIndex) => /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("div", {
                   className: "reservoir-column",
-                  children: MOCK_DATA.slice(0, 2).map((reservoir, index) => /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)("div", {
-                    className: "reservoir",
-                    ref: this.createReservoirRef(index + 1),
-                    "data-name": reservoir.ReservoirName,
-                    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("div", {
-                      className: "tag",
-                      children: reservoir.ReservoirName
-                    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)("div", {
-                      className: "level",
-                      "data-level": reservoir.Value,
-                      children: [this.getRoundedValue(reservoir.Value), "%"]
-                    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("div", {
-                      className: "line-divider"
-                    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)("div", {
-                      className: "usage",
-                      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("img", {
-                        decoding: "async",
-                        src: `${PluginAssets.images}water-icon.svg` // Dynamically fetch the correct URL
-                        ,
-                        alt: "Water Usage Icon",
-                        className: "total-water-icon"
-                      }), reservoir.AverageDailyUse, "L/day"]
-                    })]
-                  }, index + 1))
-                }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("div", {
-                  className: "reservoir-column",
-                  children: MOCK_DATA.slice(2).map((reservoir, index) => /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)("div", {
-                    // Offset index for the second column
-                    className: "reservoir",
-                    ref: this.createReservoirRef(index + 3),
-                    "data-name": reservoir.ReservoirName,
-                    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("div", {
-                      className: "tag",
-                      children: reservoir.ReservoirName
-                    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)("div", {
-                      className: "level",
-                      "data-level": reservoir.Value,
-                      children: [this.getRoundedValue(reservoir.Value), "%"]
-                    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("div", {
-                      className: "line-divider"
-                    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)("div", {
-                      className: "usage",
-                      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("img", {
-                        decoding: "async",
-                        src: `${PluginAssets.images}water-icon.svg` // Dynamically fetch the correct URL
-                        ,
-                        alt: "Water Usage Icon",
-                        className: "total-water-icon"
-                      }), reservoir.AverageDailyUse, "L/day"]
-                    })]
-                  }, index + 3))
-                }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("div", {
+                  children: column.map((reservoir, reservoirIndex) => {
+                    const overallIndex = columnIndex * 2 + reservoirIndex + 1; // Calculate the overall index
+                    const {
+                      x,
+                      y
+                    } = RESERVOIR_COORDINATES[reservoir.ReservoirName] || {
+                      x: 0,
+                      y: 0
+                    };
+                    return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)("div", {
+                      className: "reservoir",
+                      ref: this.createReservoirRef(overallIndex),
+                      "data-name": reservoir.ReservoirName,
+                      "data-x": x,
+                      "data-y": y,
+                      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("div", {
+                        className: "tag",
+                        children: reservoir.ReservoirName
+                      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)("div", {
+                        className: "level",
+                        "data-level": reservoir.Value,
+                        children: [this.getRoundedValue(reservoir.Value), "%"]
+                      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("div", {
+                        className: "line-divider"
+                      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)("div", {
+                        className: "usage",
+                        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("img", {
+                          decoding: "async",
+                          src: `${PluginAssets.images}water-icon.svg` // Dynamically fetch the correct URL
+                          ,
+                          alt: "Water Usage Icon",
+                          className: "total-water-icon"
+                        }), reservoir.AverageDailyUse, "L/day"]
+                      })]
+                    }, overallIndex);
+                  })
+                }, columnIndex)), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("div", {
                   className: "map-container",
                   ref: this.mapContainerRef,
                   children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("div", {
                     className: "blue-dot",
+                    ref: this.blueDotRef,
                     style: {
                       left: "222.832px",
                       top: "286px",
