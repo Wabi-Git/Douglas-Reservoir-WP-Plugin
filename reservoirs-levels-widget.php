@@ -139,10 +139,10 @@ function render_reservoir_levels_widget($attributes) {
 
     // Define the map coordinates for each reservoir.
     $reservoir_map_coordinates = [
-        'Daintree' => ['x' => 35, 'y' => 47],
-        'Whyanbeel' => ['x' => 43, 'y' => 62],
-        'Mossman' => ['x' => 46.5, 'y' => 65.5],
-        'Port Douglas' => ['x' => 60, 'y' => 71.5],
+        'Daintree' => ['x' => 43, 'y' => 48],
+        'Whyanbeel' => ['x' => 53, 'y' => 62],
+        'Mossman' => ['x' => 56.5, 'y' => 65.5],
+        'Port Douglas' => ['x' => 73, 'y' => 71.5],
     ];
 
     ob_start();

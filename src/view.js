@@ -1,31 +1,3 @@
-/**
- * Use this file for JavaScript code that you want to run in the front-end
- * on posts/pages that contain this block.
- *
- * When this file is defined as the value of the `viewScript` property
- * in `block.json` it will be enqueued on the front end of the site.
- *
- * Example:
- *
- * ```js
- * {
- *   "viewScript": "file:./view.js"
- * }
- * ```
- *
- * If you're not making any changes to this file because your project doesn't need any
- * JavaScript running in the front-end, then you should delete this file and remove
- * the `viewScript` property from `block.json`.
- *
- * @see https://developer.wordpress.org/block-editor/reference-guides/block-api/block-metadata/#view-script
- */
-
-/* eslint-disable no-console */
-console.log(
-	'Hello World! (from create-block-reservoir-levels-widget block)'
-);
-/* eslint-enable no-console */
-
 document.addEventListener("DOMContentLoaded", () => {
     // Select all reservoirs
     const reservoirs = document.querySelectorAll(".reservoir");
@@ -49,7 +21,21 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Blue dot hover functionality
     const blueDot = document.querySelector(".blue-dot");
-    const mapContainer = document.querySelector(".map-container");
+    const svgElement = document.querySelector(".map-container svg");
+
+    const calculateDotPosition = (reservoir) => {
+        const xPercent = parseFloat(reservoir.getAttribute("data-x"));
+        const yPercent = parseFloat(reservoir.getAttribute("data-y"));
+
+        const svgWidth = svgElement.getBoundingClientRect().width;
+        const svgHeight = svgElement.getBoundingClientRect().height;
+
+        // Calculate exact pixel positions using SVG dimensions
+        const x = (xPercent / 100) * svgWidth;
+        const y = (yPercent / 100) * svgHeight;
+
+        return { x, y };
+    };
 
     reservoirs.forEach((reservoir) => {
         // Ignore hover events for the "total-reservoir"
@@ -58,17 +44,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         reservoir.addEventListener("mouseenter", () => {
-            // Get the data-x and data-y attributes for positioning
-            const xPercent = parseFloat(reservoir.getAttribute("data-x")); // Percentage from data attribute
-            const yPercent = parseFloat(reservoir.getAttribute("data-y"));
-
-            // Get actual pixel dimensions of the map container
-            const containerWidth = mapContainer.offsetWidth;
-            const containerHeight = mapContainer.offsetHeight;
-
-            // Calculate exact pixel positions
-            const x = (xPercent / 100) * containerWidth;
-            const y = (yPercent / 100) * containerHeight;
+            const { x, y } = calculateDotPosition(reservoir);
 
             // Update blue dot position
             if (blueDot) {
@@ -83,5 +59,19 @@ document.addEventListener("DOMContentLoaded", () => {
                 blueDot.style.transform = "scale(0)";
             }
         });
+    });
+
+    // Recalculate positions on window resize
+    window.addEventListener("resize", () => {
+        const activeReservoir = document.querySelector(".reservoir:hover");
+        if (activeReservoir && !activeReservoir.classList.contains("total-reservoir")) {
+            const { x, y } = calculateDotPosition(activeReservoir);
+
+            // Update blue dot position on resize
+            if (blueDot) {
+                blueDot.style.left = `${x}px`;
+                blueDot.style.top = `${y}px`;
+            }
+        }
     });
 });
