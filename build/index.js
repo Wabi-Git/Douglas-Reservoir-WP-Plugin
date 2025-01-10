@@ -12,34 +12,12 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
-/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/block-editor */ "@wordpress/block-editor");
 /* harmony import */ var _wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__);
 /* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
 /* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__);
-// /**
-//  * React hook that is used to mark the block wrapper element.
-//  * It provides all the necessary props like the class name.
-//  */
-// import { useBlockProps } from '@wordpress/block-editor';
-// import './editor.scss';
-// import { ReservoirLevels } from './components/ReservoirLevels';
-
-// /**
-//  * The edit function renders the block in the editor.
-//  *
-//  * @return {Element} Element to render.
-//  */
-// export default function edit() {
-//     const blockProps = useBlockProps();
-//     return (
-//         <p { ...blockProps }>
-//             Reservoir Levels Widget - edit mode content!
-//         </p>
-//     );
-// }
-
 
 
 
@@ -51,10 +29,8 @@ const MOCK_DATA = [{
   DateTime: "2024-12-19T14:06:00.0000000Z",
   Value: 85.0437436785017,
   AverageDailyUse: 160,
-  // Average daily use in liters
   DailyUseChange: -0.5,
-  // Percentage change in daily use since last week
-  MonthWaterLevelChange: -2.0 // Percentage change in water level since last month
+  MonthWaterLevelChange: -2.0
 }, {
   TagName: "MossmanWTP.MOSLT5133_PV1",
   ReservoirName: "Mossman",
@@ -86,164 +62,189 @@ const MOCK_DATA = [{
   DailyUseChange: -1.0,
   MonthWaterLevelChange: 2.5
 }];
-const Edit = () => {
-  const blockProps = (0,_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.useBlockProps)({
-    className: "wp-block-create-block-reservoir-levels-widget"
-  });
-  (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
-    const reservoirs = document.querySelectorAll(".reservoir");
-    reservoirs.forEach(reservoir => {
-      const percentage = parseFloat(reservoir.querySelector(".level").textContent.replace("%", ""));
-      let fill = document.createElement("div");
-      fill.classList.add("reservoir-fill");
-      reservoir.appendChild(fill);
-      setTimeout(() => {
-        fill.style.height = `${percentage}%`;
-      }, 100);
+
+// use react class component instead of function component for clearer lifecycle management
+
+class Edit extends react__WEBPACK_IMPORTED_MODULE_0__.Component {
+  constructor(props) {
+    super(props);
+    // Create refs for each reservoir
+    this.reservoirRefs = [];
+  }
+
+  // Dynamically create refs for reservoirs
+  createReservoirRef = index => {
+    if (!this.reservoirRefs[index]) {
+      this.reservoirRefs[index] = (0,react__WEBPACK_IMPORTED_MODULE_0__.createRef)();
+    }
+    return this.reservoirRefs[index];
+  };
+  componentDidMount() {
+    // Iterate over refs and perform DOM manipulation
+    this.reservoirRefs.forEach(ref => {
+      if (ref.current) {
+        const levelElement = ref.current.querySelector(".level");
+        const percentage = parseFloat(levelElement.getAttribute("data-level"));
+        const fill = document.createElement("div");
+        fill.classList.add("reservoir-fill");
+        ref.current.appendChild(fill);
+        setTimeout(() => {
+          fill.style.height = `${percentage}%`;
+        }, 100);
+      }
     });
-  }, []);
-  const getRoundedValue = value => parseFloat(value.toFixed(1));
-  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
-    ...blockProps,
-    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
-      className: "single-index clearfix",
+  }
+  getRoundedValue = value => parseFloat(value.toFixed(1));
+  render() {
+    return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
+      className: "wp-block-create-block-reservoir-levels-widget",
       children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
-        className: "single-entry",
+        className: "single-index clearfix",
         children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
-          className: "single-content",
-          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
-            className: "reservoir-widget",
-            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("h2", {
-              children: "How full are our reservoirs?"
-            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
-              className: "reservoir-details",
-              children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
-                className: "reservoir-column",
-                children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
-                  className: "reservoir total-reservoir",
-                  children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
-                    className: "level",
-                    children: "90.5%"
-                  }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("h3", {
-                    children: "Total Reservoir Level"
-                  }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
-                    className: "line-divider-thick"
-                  }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
-                    className: "total-usage",
-                    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("img", {
-                      decoding: "async",
-                      src: "http://test-port-douglas-site.local/wp-content/plugins/Douglas Reservoir WP Plugin/assets/images/water-icon.svg",
-                      alt: "Water Usage Icon",
-                      className: "total-water-icon"
-                    }), "640L/day"]
-                  }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
-                    className: "paragraph",
-                    children: "Average Daily Use Per Person"
-                  }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
-                    className: "grounding-boxes",
-                    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
-                      className: "grounding-box",
-                      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
-                        className: "box-value negative",
-                        children: "-2.6%"
-                      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("span", {
-                        className: "label",
-                        "data-default": "Change in Use",
-                        "data-hover": "Change In Use Per Person Since Last Month"
-                      })]
+          className: "single-entry",
+          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
+            className: "single-content",
+            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
+              className: "reservoir-widget",
+              children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("h2", {
+                children: "How full are our reservoirs?"
+              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
+                className: "reservoir-details",
+                children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
+                  className: "reservoir-column",
+                  children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
+                    className: "reservoir total-reservoir",
+                    ref: this.createReservoirRef(0),
+                    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
+                      className: "level",
+                      "data-level": "90.5",
+                      children: "90.5%"
+                    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("h3", {
+                      children: "Total Reservoir Level"
+                    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
+                      className: "line-divider-thick"
                     }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
-                      className: "grounding-box",
-                      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
-                        className: "box-value positive",
-                        children: "2.5%"
-                      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("span", {
-                        className: "label",
-                        "data-default": "Change in Total",
-                        "data-hover": "Change in Total Reservoir Level since Last Week"
+                      className: "total-usage",
+                      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("img", {
+                        decoding: "async" // TODO: need to remove the hardcoded base url here the correct map.svg from assets
+                        ,
+                        src: "http://test-port-douglas-site.local/wp-content/plugins/Douglas Reservoir WP Plugin/assets/images/water-icon.svg",
+                        alt: "Water Usage Icon",
+                        className: "total-water-icon"
+                      }), "640L/day"]
+                    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
+                      className: "paragraph",
+                      children: "Average Daily Use Per Person"
+                    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
+                      className: "grounding-boxes",
+                      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
+                        className: "grounding-box",
+                        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
+                          className: "box-value negative",
+                          children: "-2.6%"
+                        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("span", {
+                          className: "label",
+                          "data-default": "Change in Use",
+                          "data-hover": "Change In Use Per Person Since Last Month"
+                        })]
+                      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
+                        className: "grounding-box",
+                        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
+                          className: "box-value positive",
+                          children: "2.5%"
+                        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("span", {
+                          className: "label",
+                          "data-default": "Change in Total",
+                          "data-hover": "Change in Total Reservoir Level since Last Week"
+                        })]
                       })]
                     })]
-                  })]
-                })
-              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
-                className: "reservoir-column",
-                children: MOCK_DATA.slice(0, 2).map((reservoir, index) => /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
-                  className: "reservoir",
-                  "data-name": reservoir.ReservoirName,
-                  children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
-                    className: "tag",
-                    children: reservoir.ReservoirName
-                  }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
-                    className: "level",
-                    children: [getRoundedValue(reservoir.Value), "%"]
-                  }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
-                    className: "line-divider"
-                  }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
-                    className: "usage",
-                    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("img", {
-                      decoding: "async",
-                      src: "http://test-port-douglas-site.local/wp-content/plugins/Douglas Reservoir WP Plugin/assets/images/water-icon.svg",
-                      alt: "Water Usage Icon",
-                      className: "water-icon"
-                    }), reservoir.AverageDailyUse, "L/day"]
-                  }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
-                    className: "reservoir-fill"
-                  })]
-                }, index))
-              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
-                className: "reservoir-column",
-                children: MOCK_DATA.slice(2).map((reservoir, index) => /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
-                  className: "reservoir",
-                  "data-name": reservoir.ReservoirName,
-                  children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
-                    className: "tag",
-                    children: reservoir.ReservoirName
-                  }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
-                    className: "level",
-                    children: [getRoundedValue(reservoir.Value), "%"]
-                  }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
-                    className: "line-divider"
-                  }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
-                    className: "usage",
-                    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("img", {
-                      decoding: "async",
-                      src: "http://test-port-douglas-site.local/wp-content/plugins/Douglas Reservoir WP Plugin/assets/images/water-icon.svg",
-                      alt: "Water Usage Icon",
-                      className: "water-icon"
-                    }), reservoir.AverageDailyUse, "L/day"]
-                  }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
-                    className: "reservoir-fill"
-                  })]
-                }, index))
-              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
-                className: "map-container",
-                children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
-                  className: "blue-dot",
-                  style: {
-                    left: "222.832px",
-                    top: "286px",
-                    transform: "scale(0)"
-                  }
-                }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("svg", {
-                  id: "Layer_1",
-                  "data-name": "Layer 1",
-                  xmlns: "http://www.w3.org/2000/svg",
-                  viewBox: "0 0 766.98 1005.03",
-                  children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("path", {
-                    className: "cls-2",
-                    d: "..."
                   })
+                }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
+                  className: "reservoir-column",
+                  children: MOCK_DATA.slice(0, 2).map((reservoir, index) => /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
+                    className: "reservoir",
+                    ref: this.createReservoirRef(index + 1),
+                    "data-name": reservoir.ReservoirName,
+                    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
+                      className: "tag",
+                      children: reservoir.ReservoirName
+                    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
+                      className: "level",
+                      "data-level": reservoir.Value,
+                      children: [this.getRoundedValue(reservoir.Value), "%"]
+                    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
+                      className: "line-divider"
+                    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
+                      className: "usage",
+                      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("img", {
+                        decoding: "async" // TODO: need to remove the hardcoded base url here the correct map.svg from assets
+                        ,
+                        src: "http://test-port-douglas-site.local/wp-content/plugins/Douglas Reservoir WP Plugin/assets/images/water-icon.svg",
+                        alt: "Water Usage Icon",
+                        className: "water-icon"
+                      }), reservoir.AverageDailyUse, "L/day"]
+                    })]
+                  }, index + 1))
+                }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
+                  className: "reservoir-column",
+                  children: MOCK_DATA.slice(2).map((reservoir, index) => /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
+                    // Offset index for the second column
+                    className: "reservoir",
+                    ref: this.createReservoirRef(index + 3),
+                    "data-name": reservoir.ReservoirName,
+                    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
+                      className: "tag",
+                      children: reservoir.ReservoirName
+                    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
+                      className: "level",
+                      "data-level": reservoir.Value,
+                      children: [this.getRoundedValue(reservoir.Value), "%"]
+                    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
+                      className: "line-divider"
+                    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
+                      className: "usage",
+                      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("img", {
+                        decoding: "async" // TODO: need to remove the hardcoded base url here the correct map.svg from assets
+                        ,
+                        src: "http://test-port-douglas-site.local/wp-content/plugins/Douglas Reservoir WP Plugin/assets/images/water-icon.svg",
+                        alt: "Water Usage Icon",
+                        className: "water-icon"
+                      }), reservoir.AverageDailyUse, "L/day"]
+                    })]
+                  }, index + 3))
+                }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
+                  className: "map-container",
+                  children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
+                    className: "blue-dot",
+                    style: {
+                      left: "222.832px",
+                      top: "286px",
+                      transform: "scale(0)"
+                    }
+                  }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("svg", {
+                    // TODO: need to pull the correct map.svg from assets
+                    id: "Layer_1",
+                    "data-name": "Layer 1",
+                    xmlns: "http://www.w3.org/2000/svg",
+                    viewBox: "0 0 766.98 1005.03",
+                    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("path", {
+                      className: "cls-2",
+                      d: "..."
+                    })
+                  })]
                 })]
+              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
+                className: "updated-daily",
+                children: "\u2139\uFE0F Updated Daily"
               })]
-            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
-              className: "updated-daily",
-              children: "\u2139\uFE0F Updated Daily"
-            })]
+            })
           })
         })
       })
-    })
-  });
-};
+    });
+  }
+}
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (Edit);
 
 /***/ }),
@@ -345,6 +346,16 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+/***/ "react":
+/*!************************!*\
+  !*** external "React" ***!
+  \************************/
+/***/ ((module) => {
+
+module.exports = window["React"];
+
+/***/ }),
+
 /***/ "react/jsx-runtime":
 /*!**********************************!*\
   !*** external "ReactJSXRuntime" ***!
@@ -372,16 +383,6 @@ module.exports = window["wp"]["blockEditor"];
 /***/ ((module) => {
 
 module.exports = window["wp"]["blocks"];
-
-/***/ }),
-
-/***/ "@wordpress/element":
-/*!*********************************!*\
-  !*** external ["wp","element"] ***!
-  \*********************************/
-/***/ ((module) => {
-
-module.exports = window["wp"]["element"];
 
 /***/ }),
 

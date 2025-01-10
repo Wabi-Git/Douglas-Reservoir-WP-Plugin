@@ -10,7 +10,7 @@ document.addEventListener("DOMContentLoaded", () => {
     reservoirs.forEach((reservoir) => {
         // Extract percentage value from the `.level` element
         const percentage = parseFloat(
-            reservoir.querySelector(".level").textContent.replace("%", "")
+            reservoir.querySelector(".level").getAttribute("data-level")
         );
 
         // Create a `reservoir-fill` div to visually represent the fill level

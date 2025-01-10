@@ -1,27 +1,5 @@
-// /**
-//  * React hook that is used to mark the block wrapper element.
-//  * It provides all the necessary props like the class name.
-//  */
-// import { useBlockProps } from '@wordpress/block-editor';
-// import './editor.scss';
-// import { ReservoirLevels } from './components/ReservoirLevels';
-
-// /**
-//  * The edit function renders the block in the editor.
-//  *
-//  * @return {Element} Element to render.
-//  */
-// export default function edit() {
-//     const blockProps = useBlockProps();
-//     return (
-//         <p { ...blockProps }>
-//             Reservoir Levels Widget - edit mode content!
-//         </p>
-//     );
-// }
-
-import { useEffect } from '@wordpress/element';
-import { useBlockProps } from '@wordpress/block-editor';
+import React, { Component, createRef } from "react";
+import { useBlockProps } from "@wordpress/block-editor";
 
 const MOCK_DATA = [
     {
@@ -31,9 +9,9 @@ const MOCK_DATA = [
         Description: "LT5500 Treated Water Reservoir Level",
         DateTime: "2024-12-19T14:06:00.0000000Z",
         Value: 85.0437436785017,
-        AverageDailyUse: 160, // Average daily use in liters
-        DailyUseChange: -0.5, // Percentage change in daily use since last week
-        MonthWaterLevelChange: -2.0 // Percentage change in water level since last month
+        AverageDailyUse: 160,
+        DailyUseChange: -0.5,
+        MonthWaterLevelChange: -2.0
     },
     {
         TagName: "MossmanWTP.MOSLT5133_PV1",
@@ -70,144 +48,161 @@ const MOCK_DATA = [
     },
 ];
 
-const Edit = () => {
-    const blockProps = useBlockProps({
-        className: "wp-block-create-block-reservoir-levels-widget",
-    });
+// use react class component instead of function component for clearer lifecycle management
 
-    useEffect(() => {
-        const reservoirs = document.querySelectorAll(".reservoir");
+class Edit extends Component {
+    constructor(props) {
+        super(props);
+        // Create refs for each reservoir
+        this.reservoirRefs = [];
+    }
 
-        reservoirs.forEach((reservoir) => {
-            const percentage = parseFloat(
-                reservoir.querySelector(".level").textContent.replace("%", "")
-            );
+    // Dynamically create refs for reservoirs
+    createReservoirRef = (index) => {
+        if (!this.reservoirRefs[index]) {
+            this.reservoirRefs[index] = createRef();
+        }
+        return this.reservoirRefs[index];
+    };
 
-            let fill = document.createElement("div");
-            fill.classList.add("reservoir-fill");
-            reservoir.appendChild(fill);
-
-            setTimeout(() => {
-                fill.style.height = `${percentage}%`;
-            }, 100);
+    componentDidMount() {
+        // Iterate over refs and perform DOM manipulation
+        this.reservoirRefs.forEach((ref) => {
+            if (ref.current) {
+                const levelElement = ref.current.querySelector(".level");
+                const percentage = parseFloat(levelElement.getAttribute("data-level"));
+                const fill = document.createElement("div");
+                fill.classList.add("reservoir-fill");
+                ref.current.appendChild(fill);
+                setTimeout(() => {
+                    fill.style.height = `${percentage}%`;
+                }, 100);
+            }
         });
-    }, []);
+    }
 
-    const getRoundedValue = (value) => parseFloat(value.toFixed(1));
+    getRoundedValue = (value) => parseFloat(value.toFixed(1));
 
-    return (
-        <div {...blockProps}>
-            <div className="single-index clearfix">
-                <div className="single-entry">
-                    <div className="single-content">
-                        <div className="reservoir-widget">
-                            <h2>How full are our reservoirs?</h2>
-                            <div className="reservoir-details">
-                                <div className="reservoir-column">
-                                    <div className="reservoir total-reservoir">
-                                        <div className="level">90.5%</div>
-                                        <h3>Total Reservoir Level</h3>
-                                        <div className="line-divider-thick"></div>
-                                        <div className="total-usage">
-                                            <img
-                                                decoding="async"
-                                                src="http://test-port-douglas-site.local/wp-content/plugins/Douglas Reservoir WP Plugin/assets/images/water-icon.svg"
-                                                alt="Water Usage Icon"
-                                                className="total-water-icon"
-                                            />
-                                            640L/day
-                                        </div>
-                                        <div className="paragraph">Average Daily Use Per Person</div>
-                                        <div className="grounding-boxes">
-                                            <div className="grounding-box">
-                                                <div className="box-value negative">-2.6%</div>
-                                                <span
-                                                    className="label"
-                                                    data-default="Change in Use"
-                                                    data-hover="Change In Use Per Person Since Last Month"
-                                                ></span>
+    render() {
+        return (
+            <div className="wp-block-create-block-reservoir-levels-widget">
+                <div className="single-index clearfix">
+                    <div className="single-entry">
+                        <div className="single-content">
+                            <div className="reservoir-widget">
+                                <h2>How full are our reservoirs?</h2>
+                                <div className="reservoir-details">
+                                    <div className="reservoir-column">
+                                        <div
+                                            className="reservoir total-reservoir"
+                                            ref={this.createReservoirRef(0)}
+                                        >
+                                            <div className="level" data-level="90.5">90.5%</div>
+                                            <h3>Total Reservoir Level</h3>
+                                            <div className="line-divider-thick"></div>
+                                            <div className="total-usage">
+                                                <img
+                                                    decoding="async" // TODO: need to remove the hardcoded base url here the correct map.svg from assets
+                                                    src="http://test-port-douglas-site.local/wp-content/plugins/Douglas Reservoir WP Plugin/assets/images/water-icon.svg"
+                                                    alt="Water Usage Icon"
+                                                    className="total-water-icon"
+                                                />
+                                                640L/day
                                             </div>
-                                            <div className="grounding-box">
-                                                <div className="box-value positive">2.5%</div>
-                                                <span
-                                                    className="label"
-                                                    data-default="Change in Total"
-                                                    data-hover="Change in Total Reservoir Level since Last Week"
-                                                ></span>
+                                            <div className="paragraph">Average Daily Use Per Person</div>
+                                            <div className="grounding-boxes">
+                                                <div className="grounding-box">
+                                                    <div className="box-value negative">-2.6%</div>
+                                                    <span
+                                                        className="label"
+                                                        data-default="Change in Use"
+                                                        data-hover="Change In Use Per Person Since Last Month"
+                                                    ></span>
+                                                </div>
+                                                <div className="grounding-box">
+                                                    <div className="box-value positive">2.5%</div>
+                                                    <span
+                                                        className="label"
+                                                        data-default="Change in Total"
+                                                        data-hover="Change in Total Reservoir Level since Last Week"
+                                                    ></span>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
-                                <div className="reservoir-column">
-                                    {MOCK_DATA.slice(0, 2).map((reservoir, index) => (
-                                        <div
-                                            key={index}
-                                            className="reservoir"
-                                            data-name={reservoir.ReservoirName}
-                                        >
-                                            <div className="tag">{reservoir.ReservoirName}</div>
-                                            <div className="level">{getRoundedValue(reservoir.Value)}%</div>
-                                            <div className="line-divider"></div>
-                                            <div className="usage">
-                                                <img
-                                                    decoding="async"
-                                                    src="http://test-port-douglas-site.local/wp-content/plugins/Douglas Reservoir WP Plugin/assets/images/water-icon.svg"
-                                                    alt="Water Usage Icon"
-                                                    className="water-icon"
-                                                />
-                                                {reservoir.AverageDailyUse}L/day
+                                    <div className="reservoir-column">
+                                        {MOCK_DATA.slice(0, 2).map((reservoir, index) => (
+                                            <div
+                                                key={index + 1}
+                                                className="reservoir"
+                                                ref={this.createReservoirRef(index + 1)}
+                                                data-name={reservoir.ReservoirName}
+                                            >
+                                                <div className="tag">{reservoir.ReservoirName}</div>
+                                                <div className="level" data-level={reservoir.Value}>
+                                                    {this.getRoundedValue(reservoir.Value)}%
+                                                </div>
+                                                <div className="line-divider"></div>
+                                                <div className="usage">
+                                                    <img
+                                                        decoding="async" // TODO: need to remove the hardcoded base url here the correct map.svg from assets
+                                                        src="http://test-port-douglas-site.local/wp-content/plugins/Douglas Reservoir WP Plugin/assets/images/water-icon.svg"
+                                                        alt="Water Usage Icon"
+                                                        className="water-icon"
+                                                    />
+                                                    {reservoir.AverageDailyUse}L/day
+                                                </div>
                                             </div>
-                                            <div className="reservoir-fill"></div>
-                                        </div>
-                                    ))}
-                                </div>
-                                <div className="reservoir-column">
-                                    {MOCK_DATA.slice(2).map((reservoir, index) => (
-                                        <div
-                                            key={index}
-                                            className="reservoir"
-                                            data-name={reservoir.ReservoirName}
-                                        >
-                                            <div className="tag">{reservoir.ReservoirName}</div>
-                                            <div className="level">{getRoundedValue(reservoir.Value)}%</div>
-                                            <div className="line-divider"></div>
-                                            <div className="usage">
-                                                <img
-                                                    decoding="async"
-                                                    src="http://test-port-douglas-site.local/wp-content/plugins/Douglas Reservoir WP Plugin/assets/images/water-icon.svg"
-                                                    alt="Water Usage Icon"
-                                                    className="water-icon"
-                                                />
-                                                {reservoir.AverageDailyUse}L/day
+                                        ))}
+                                    </div>
+                                    <div className="reservoir-column">
+                                        {MOCK_DATA.slice(2).map((reservoir, index) => (
+                                            <div
+                                                key={index + 3} // Offset index for the second column
+                                                className="reservoir"
+                                                ref={this.createReservoirRef(index + 3)}
+                                                data-name={reservoir.ReservoirName}
+                                            >
+                                                <div className="tag">{reservoir.ReservoirName}</div>
+                                                <div className="level" data-level={reservoir.Value}>
+                                                    {this.getRoundedValue(reservoir.Value)}%
+                                                </div>
+                                                <div className="line-divider"></div>
+                                                <div className="usage">
+                                                    <img
+                                                        decoding="async" // TODO: need to remove the hardcoded base url here the correct map.svg from assets
+                                                        src="http://test-port-douglas-site.local/wp-content/plugins/Douglas Reservoir WP Plugin/assets/images/water-icon.svg"
+                                                        alt="Water Usage Icon"
+                                                        className="water-icon"
+                                                    />
+                                                    {reservoir.AverageDailyUse}L/day
+                                                </div>
                                             </div>
-                                            <div className="reservoir-fill"></div>
-                                        </div>
-                                    ))}
+                                        ))}
+                                    </div>
+                                    <div className="map-container">
+                                        <div
+                                            className="blue-dot"
+                                            style={{ left: "222.832px", top: "286px", transform: "scale(0)" }}
+                                        ></div>
+                                        <svg // TODO: need to pull the correct map.svg from assets
+                                            id="Layer_1"
+                                            data-name="Layer 1"
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            viewBox="0 0 766.98 1005.03"
+                                        >
+                                            <path className="cls-2" d="..." />
+                                        </svg>
+                                    </div>
                                 </div>
-                                <div className="map-container">
-                                    <div
-                                        className="blue-dot"
-                                        style={{ left: "222.832px", top: "286px", transform: "scale(0)" }}
-                                    ></div>
-                                    <svg
-                                        id="Layer_1"
-                                        data-name="Layer 1"
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        viewBox="0 0 766.98 1005.03"
-                                    >
-                                        <path className="cls-2" d="..." />
-                                    </svg>
-                                </div>
-                            </div>
-                            <div className="updated-daily">
-                                ℹ️ Updated Daily
+                                <div className="updated-daily">ℹ️ Updated Daily</div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-    );
-};
+        );
+    }
+}
 
 export default Edit;
